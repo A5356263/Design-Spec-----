@@ -1,0 +1,29 @@
+{
+  "version": "0.1",
+  "preset": "ant-lite",
+  "stages": ["skeleton", "components", "content"],
+  "types": {
+    "Flex": { "stage": ["skeleton", "components", "content"], "props": ["direction", "gap", "align", "justify", "wrap", "width"] },
+    "Space": { "stage": ["skeleton", "components", "content"], "props": ["direction", "size", "align", "gap"] },
+    "Divider": { "stage": ["skeleton", "components", "content"], "props": ["orientation"] },
+    "Card": { "stage": ["skeleton", "components", "content"], "props": ["title", "padding", "gap", "width"] },
+    "TypographyText": { "stage": ["skeleton", "components", "content"], "props": ["text", "level", "emphasis"] },
+    "Skeleton": { "stage": ["skeleton", "components", "content"], "props": ["active", "rows"] },
+    "Button": { "stage": ["components", "content"], "props": ["label", "variant", "size", "disabled"] },
+    "Input": { "stage": ["components", "content"], "props": ["placeholder", "value", "disabled"] },
+    "Select": { "stage": ["components", "content"], "props": ["options", "value", "placeholder", "disabled"] },
+    "Form": { "stage": ["components", "content"], "props": ["layout", "disabled"] },
+    "Table": { "stage": ["components", "content"], "props": ["columns", "rows", "size", "bordered", "width"] },
+    "Descriptions": { "stage": ["components", "content"], "props": ["items", "columns", "size", "gap"] },
+    "Segmented": { "stage": ["components", "content"], "props": ["options", "value", "size", "block"] },
+    "Tabs": { "stage": ["components", "content"], "props": ["items", "activeKey"] },
+    "Alert": { "stage": ["components", "content"], "props": ["message", "description", "tone", "showGlyph"] },
+    "Tag": { "stage": ["components", "content"], "props": ["label", "tone", "size"] },
+    "Breadcrumb": { "stage": ["components", "content"], "props": ["items"] },
+    "Statistic": { "stage": ["content"], "props": ["title", "value", "prefix", "trend"] },
+    "Timeline": { "stage": ["content"], "props": ["items", "mode"] },
+    "Progress": { "stage": ["content"], "props": ["percent", "status", "size", "label", "width"] },
+    "List": { "stage": ["content"], "props": ["items", "size", "bordered", "gap"] },
+    "Empty": { "stage": ["content"], "props": ["description"] }
+  }
+}

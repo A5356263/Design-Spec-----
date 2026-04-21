@@ -4,12 +4,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "echo ready"
+    "check": "echo ready",
+    "mainline": "tsx packages/mainline.ts",
+    "acceptance": "tsx packages/acceptance.ts"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.1",
     "antd": "^6.3.6",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "tsx": "^4.20.6"
   }
 }

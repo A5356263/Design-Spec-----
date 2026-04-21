@@ -1,4 +1,4 @@
-﻿{
+{
   "root": "demo-root",
   "elements": {
     "demo-root": {
@@ -8,8 +8,34 @@
         "gap": 12
       },
       "children": [
+        "demo-header",
+        "demo-body"
+      ]
+    },
+    "demo-header": {
+      "type": "Card",
+      "props": {
+        "title": "页面目标：提供一个文档生成与评估的演示页"
+      },
+      "children": [
+        "demo-title"
+      ]
+    },
+    "demo-title": {
+      "type": "TypographyText",
+      "props": {
+        "text": "阶段一占位文本"
+      },
+      "children": []
+    },
+    "demo-body": {
+      "type": "Card",
+      "props": {
+        "title": "内容区域占位"
+      },
+      "children": [
         "demo-toolbar",
-        "demo-table-card"
+        "demo-table"
       ]
     },
     "demo-toolbar": {
@@ -38,21 +64,18 @@
       },
       "children": []
     },
-    "demo-table-card": {
-      "type": "Card",
-      "props": {
-        "title": "结果列表"
-      },
-      "children": [
-        "demo-table"
-      ]
-    },
     "demo-table": {
       "type": "Table",
       "props": {
         "columns": [
-          { "title": "名称", "dataIndex": "name" },
-          { "title": "状态", "dataIndex": "status" }
+          {
+            "title": "名称",
+            "dataIndex": "name"
+          },
+          {
+            "title": "状态",
+            "dataIndex": "status"
+          }
         ]
       },
       "children": []

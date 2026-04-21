@@ -1,4 +1,4 @@
-﻿{
+{
   "root": "demo-root",
   "elements": {
     "demo-root": {
@@ -8,39 +8,84 @@
         "gap": 12
       },
       "children": [
-        "demo-alert",
-        "demo-table-card"
+        "demo-header",
+        "demo-body"
       ]
     },
-    "demo-alert": {
-      "type": "Alert",
+    "demo-header": {
+      "type": "Card",
       "props": {
-        "message": "当前数据为示例内容",
-        "description": "用于阶段三内容填充演示",
-        "tone": "info",
-        "showGlyph": true
+        "title": "页面目标：提供一个文档生成与评估的演示页"
+      },
+      "children": [
+        "demo-title"
+      ]
+    },
+    "demo-title": {
+      "type": "TypographyText",
+      "props": {
+        "text": "阶段一占位文本"
       },
       "children": []
     },
-    "demo-table-card": {
+    "demo-body": {
       "type": "Card",
       "props": {
-        "title": "结果列表"
+        "title": "内容区域占位"
       },
       "children": [
+        "demo-toolbar",
         "demo-table"
       ]
+    },
+    "demo-toolbar": {
+      "type": "Space",
+      "props": {
+        "direction": "horizontal",
+        "gap": 8
+      },
+      "children": [
+        "demo-search-input",
+        "demo-search-btn"
+      ]
+    },
+    "demo-search-input": {
+      "type": "Input",
+      "props": {
+        "placeholder": "请输入关键词"
+      },
+      "children": []
+    },
+    "demo-search-btn": {
+      "type": "Button",
+      "props": {
+        "label": "查询",
+        "variant": "primary"
+      },
+      "children": []
     },
     "demo-table": {
       "type": "Table",
       "props": {
         "columns": [
-          { "title": "名称", "dataIndex": "name" },
-          { "title": "状态", "dataIndex": "status" }
+          {
+            "title": "名称",
+            "dataIndex": "name"
+          },
+          {
+            "title": "状态",
+            "dataIndex": "status"
+          }
         ],
         "rows": [
-          { "name": "样例 A", "status": "正常" },
-          { "name": "样例 B", "status": "待处理" }
+          {
+            "name": "样例 A",
+            "status": "正常"
+          },
+          {
+            "name": "样例 B",
+            "status": "待处理"
+          }
         ]
       },
       "children": []
