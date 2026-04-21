@@ -1,12 +1,17 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { parseSections } from "./document-agent";
 import { EvaluationResult, PageSchema, StageName, toCatalogStage } from "./schema";
 import { writeStageFile } from "./stage-guard";
 
 type CatalogTypeRule = { stage: string[]; props: string[] };
 type AntLiteCatalog = {
   types: Record<string, CatalogTypeRule>;
+};
+type DesignSection = {
+  title: string;
+  lines: string[];
+  bullets: string[];
+  ordered: string[];
 };
 
 function isRecord(input: unknown): input is Record<string, unknown> {
@@ -24,6 +29,33 @@ function parsePageSchema(raw: string): { page: PageSchema | null; parseError: st
     const reason = err instanceof Error ? err.message : "未知错误";
     return { page: null, parseError: `候选稿 JSON 解析失败：${reason}` };
   }
+}
+
+function cleanLine(line: string): string {
+  return line.trim().replace(/^[*-]\s+/, "").replace(/^\d+\.\s+/, "").trim();
+}
+
+function parseDesignSections(markdown: string): DesignSection[] {
+  const lines = markdown.replace(/^\uFEFF/, "").split(/\r?\n/);
+  const headings: Array<{ index: number; title: string }> = [];
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const match = lines[i].match(/^##\s+(.*)$/);
+    if (match) {
+      headings.push({ index: i, title: match[1].trim() });
+    }
+  }
+
+  return headings.map((heading, idx) => {
+    const end = headings[idx + 1]?.index ?? lines.length;
+    const body = lines.slice(heading.index + 1, end).map((line) => line.trim()).filter(Boolean);
+    return {
+      title: heading.title,
+      lines: body,
+      bullets: body.filter((line) => /^[-*]\s+/.test(line)).map(cleanLine),
+      ordered: body.filter((line) => /^\d+\.\s+/.test(line)).map(cleanLine)
+    };
+  });
 }
 
 function validateByProtocol(page: PageSchema, stageName: StageName, catalog: AntLiteCatalog): EvaluationResult {
@@ -139,7 +171,7 @@ function countNodeType(page: PageSchema, type: string): number {
 
 function validateIntentByDesign(page: PageSchema, stageName: StageName, designSpec: string): string[] {
   const issues: string[] = [];
-  const sections = parseSections(designSpec);
+  const sections = parseDesignSections(designSpec);
   const texts = collectTextFields(page);
   const hasText = (keyword: string): boolean => texts.some((item) => item.includes(keyword));
 

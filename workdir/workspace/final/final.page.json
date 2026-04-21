@@ -10,8 +10,9 @@
       "children": [
         "node-2",
         "node-3",
-        "node-10",
-        "node-11"
+        "node-11",
+        "node-12",
+        "node-13"
       ]
     },
     "node-2": {
@@ -20,10 +21,10 @@
         "title": "顶部标题与操作区"
       },
       "children": [
-        "node-12",
-        "node-13",
         "node-14",
-        "node-15"
+        "node-15",
+        "node-16",
+        "node-17"
       ]
     },
     "node-3": {
@@ -34,7 +35,7 @@
       },
       "children": [
         "node-4",
-        "node-7"
+        "node-8"
       ]
     },
     "node-4": {
@@ -46,104 +47,126 @@
       "children": [
         "node-5",
         "node-6",
-        "node-18"
+        "node-7",
+        "node-20"
       ]
     },
     "node-5": {
       "type": "Card",
       "props": {
-        "title": "模块一：申请信息"
+        "title": "模块一：基础信息"
       },
-      "children": []
+      "children": [
+        "node-31"
+      ]
     },
     "node-6": {
       "type": "Card",
       "props": {
-        "title": "模块二：借用清单"
+        "title": "模块二：费用明细"
       },
       "children": [
-        "node-19"
+        "node-38"
       ]
     },
     "node-7": {
+      "type": "Card",
+      "props": {
+        "title": "模块三：补充说明"
+      },
+      "children": [
+        "node-39"
+      ]
+    },
+    "node-8": {
       "type": "Card",
       "props": {
         "title": "右侧辅助信息区",
         "width": "30%"
       },
       "children": [
-        "node-8",
-        "node-9"
-      ]
-    },
-    "node-8": {
-      "type": "Card",
-      "props": {
-        "title": "卡片一：借用规则"
-      },
-      "children": [
-        "node-20",
-        "node-21"
+        "node-9",
+        "node-10"
       ]
     },
     "node-9": {
       "type": "Card",
       "props": {
-        "title": "卡片二：库存摘要"
+        "title": "卡片一：报销规则提示"
       },
-      "children": []
+      "children": [
+        "node-40",
+        "node-41",
+        "node-42"
+      ]
     },
     "node-10": {
+      "type": "Card",
+      "props": {
+        "title": "卡片二：汇总信息"
+      },
+      "children": [
+        "node-43"
+      ]
+    },
+    "node-11": {
       "type": "Card",
       "props": {
         "title": "底部操作区"
       },
       "children": [
-        "node-22"
+        "node-44"
       ]
     },
-    "node-11": {
+    "node-12": {
       "type": "Card",
       "props": {
         "title": "设计说明"
       },
       "children": []
     },
-    "node-12": {
-      "type": "TypographyText",
-      "props": {
-        "text": "设备借用申请",
-        "level": "h3"
-      },
-      "children": []
-    },
     "node-13": {
-      "type": "TypographyText",
+      "type": "Card",
       "props": {
-        "text": "用于提交设备借用申请"
+        "title": "中间主体区"
       },
       "children": []
     },
     "node-14": {
-      "type": "Tag",
+      "type": "TypographyText",
       "props": {
-        "label": "待填写",
-        "tone": "default"
+        "text": "差旅报销申请",
+        "level": "h3"
       },
       "children": []
     },
     "node-15": {
+      "type": "TypographyText",
+      "props": {
+        "text": "用于创建并提交本次差旅报销"
+      },
+      "children": []
+    },
+    "node-16": {
+      "type": "Tag",
+      "props": {
+        "label": "草稿",
+        "tone": "default"
+      },
+      "children": []
+    },
+    "node-17": {
       "type": "Space",
       "props": {
         "direction": "horizontal",
         "gap": 8
       },
       "children": [
-        "node-16",
-        "node-17"
+        "node-18",
+        "node-19"
       ]
     },
-    "node-16": {
+    "node-18": {
       "type": "Button",
       "props": {
         "label": "保存草稿",
@@ -151,96 +174,258 @@
       },
       "children": []
     },
-    "node-17": {
+    "node-19": {
       "type": "Button",
       "props": {
-        "label": "提交申请",
+        "label": "提交审批",
         "variant": "primary"
       },
       "children": []
     },
-    "node-18": {
-      "type": "Table",
-      "props": {
-        "columns": [
-          {
-            "title": "申请单编号",
-            "dataIndex": "申请单编号"
-          },
-          {
-            "title": "申请人",
-            "dataIndex": "申请人"
-          },
-          {
-            "title": "借用部门",
-            "dataIndex": "借用部门"
-          },
-          {
-            "title": "设备名称",
-            "dataIndex": "设备名称"
-          },
-          {
-            "title": "数量",
-            "dataIndex": "数量"
-          },
-          {
-            "title": "借用日期",
-            "dataIndex": "借用日期"
-          }
-        ],
-        "bordered": true,
-        "rows": []
-      },
-      "children": []
-    },
-    "node-19": {
-      "type": "Table",
-      "props": {
-        "columns": [
-          {
-            "title": "设备名称",
-            "dataIndex": "设备名称"
-          },
-          {
-            "title": "数量",
-            "dataIndex": "数量"
-          },
-          {
-            "title": "借用日期",
-            "dataIndex": "借用日期"
-          }
-        ],
-        "bordered": true,
-        "rows": []
-      },
-      "children": []
-    },
     "node-20": {
-      "type": "TypographyText",
+      "type": "Form",
       "props": {
-        "text": "设备归还前不得重复申请"
+        "layout": "vertical"
       },
-      "children": []
+      "children": [
+        "node-21",
+        "node-22",
+        "node-23",
+        "node-24",
+        "node-25",
+        "node-26",
+        "node-27",
+        "node-28",
+        "node-29",
+        "node-30"
+      ]
     },
     "node-21": {
-      "type": "TypographyText",
+      "type": "Input",
       "props": {
-        "text": "高价值设备需主管审批"
+        "placeholder": "报销单编号（只读，占位展示即可）"
       },
       "children": []
     },
     "node-22": {
+      "type": "Input",
+      "props": {
+        "placeholder": "申请人"
+      },
+      "children": []
+    },
+    "node-23": {
+      "type": "Input",
+      "props": {
+        "placeholder": "所属部门"
+      },
+      "children": []
+    },
+    "node-24": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差事由"
+      },
+      "children": []
+    },
+    "node-25": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差开始日期"
+      },
+      "children": []
+    },
+    "node-26": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差结束日期"
+      },
+      "children": []
+    },
+    "node-27": {
+      "type": "Input",
+      "props": {
+        "placeholder": "日期"
+      },
+      "children": []
+    },
+    "node-28": {
+      "type": "Input",
+      "props": {
+        "placeholder": "费用类型"
+      },
+      "children": []
+    },
+    "node-29": {
+      "type": "Input",
+      "props": {
+        "placeholder": "金额"
+      },
+      "children": []
+    },
+    "node-30": {
+      "type": "Input",
+      "props": {
+        "placeholder": "说明"
+      },
+      "children": []
+    },
+    "node-31": {
+      "type": "Form",
+      "props": {
+        "layout": "vertical"
+      },
+      "children": [
+        "node-32",
+        "node-33",
+        "node-34",
+        "node-35",
+        "node-36",
+        "node-37"
+      ]
+    },
+    "node-32": {
+      "type": "Input",
+      "props": {
+        "placeholder": "报销单编号（只读，占位展示即可）"
+      },
+      "children": []
+    },
+    "node-33": {
+      "type": "Input",
+      "props": {
+        "placeholder": "申请人"
+      },
+      "children": []
+    },
+    "node-34": {
+      "type": "Input",
+      "props": {
+        "placeholder": "所属部门"
+      },
+      "children": []
+    },
+    "node-35": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差事由"
+      },
+      "children": []
+    },
+    "node-36": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差开始日期"
+      },
+      "children": []
+    },
+    "node-37": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差结束日期"
+      },
+      "children": []
+    },
+    "node-38": {
+      "type": "Table",
+      "props": {
+        "columns": [
+          {
+            "title": "日期",
+            "dataIndex": "日期"
+          },
+          {
+            "title": "费用类型",
+            "dataIndex": "费用类型"
+          },
+          {
+            "title": "金额",
+            "dataIndex": "金额"
+          },
+          {
+            "title": "说明",
+            "dataIndex": "说明"
+          }
+        ],
+        "bordered": true,
+        "rows": [
+          {
+            "日期": "2026-03-01",
+            "费用类型": "酒店",
+            "金额": "¥800",
+            "说明": "上海出差住宿"
+          },
+          {
+            "日期": "2026-03-02",
+            "费用类型": "餐饮",
+            "金额": "¥120",
+            "说明": "客户拜访午餐"
+          }
+        ]
+      },
+      "children": []
+    },
+    "node-39": {
+      "type": "Input",
+      "props": {
+        "placeholder": "模块三：补充说明"
+      },
+      "children": []
+    },
+    "node-40": {
+      "type": "TypographyText",
+      "props": {
+        "text": "酒店费用需提供发票"
+      },
+      "children": []
+    },
+    "node-41": {
+      "type": "TypographyText",
+      "props": {
+        "text": "餐饮费用单次不可超过规定额度"
+      },
+      "children": []
+    },
+    "node-42": {
+      "type": "TypographyText",
+      "props": {
+        "text": "提交后将进入审批流程"
+      },
+      "children": []
+    },
+    "node-43": {
+      "type": "Descriptions",
+      "props": {
+        "columns": 1,
+        "items": [
+          {
+            "label": "费用合计",
+            "value": "¥920"
+          },
+          {
+            "label": "明细条数",
+            "value": "2"
+          },
+          {
+            "label": "当前状态",
+            "value": "草稿"
+          }
+        ]
+      },
+      "children": []
+    },
+    "node-44": {
       "type": "Space",
       "props": {
         "direction": "horizontal",
         "gap": 8
       },
       "children": [
-        "node-23",
-        "node-24"
+        "node-45",
+        "node-46"
       ]
     },
-    "node-23": {
+    "node-45": {
       "type": "Button",
       "props": {
         "label": "取消",
@@ -248,10 +433,10 @@
       },
       "children": []
     },
-    "node-24": {
+    "node-46": {
       "type": "Button",
       "props": {
-        "label": "提交申请",
+        "label": "提交审批",
         "variant": "primary"
       },
       "children": []

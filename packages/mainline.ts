@@ -5,21 +5,14 @@ import { evaluateCandidateFile } from "./evaluate";
 import { freezeStage } from "./freeze";
 import { hasUnresolvedRollback } from "./rollback";
 import { MAINLINE_ORDER, PageSchema, StageName, STAGE_DIR } from "./schema";
-import { writeStageFile } from "./stage-guard";
-import { buildComponentsStage } from "./stage_components";
-import { buildContentStage } from "./stage_content";
-import { buildSkeletonStage } from "./stage_skeleton";
-import { AgentArtifacts } from "./document-agent";
 
-function stageFiles(projectRoot: string, stageName: StageName): Record<string, string> {
+export function stageFiles(projectRoot: string, stageName: StageName): Record<string, string> {
   const base = path.join(projectRoot, STAGE_DIR[stageName]);
   return {
     base,
     candidate: path.join(base, "candidate.page.json"),
     approved: path.join(base, "approved.page.json"),
-    evaluation: path.join(base, "evaluation.md"),
-    prompt: path.join(base, "agent-prompt.md"),
-    context: path.join(base, "agent-context.json")
+    evaluation: path.join(base, "evaluation.md")
   };
 }
 
@@ -32,7 +25,7 @@ async function exists(filePath: string): Promise<boolean> {
   }
 }
 
-async function readJson<T>(filePath: string): Promise<T> {
+export async function readJson<T>(filePath: string): Promise<T> {
   const raw = await readFile(filePath, "utf8");
   return JSON.parse(raw.replace(/^\uFEFF/, "")) as T;
 }
@@ -63,16 +56,11 @@ async function appendRunLog(projectRoot: string, message: string): Promise<void>
   await writeFile(runLogPath, `${oldLog.trimEnd()}\n- [${now}] ${message}\n`, "utf8");
 }
 
-async function generateStageCandidate(projectRoot: string, stageName: StageName): Promise<AgentArtifacts> {
-  if (stageName === "stage_1_skeleton") {
-    return buildSkeletonStage(projectRoot);
+async function assertCandidateExists(projectRoot: string, stageName: StageName): Promise<void> {
+  const candidatePath = stageFiles(projectRoot, stageName).candidate;
+  if (!(await exists(candidatePath))) {
+    throw new Error(`硬卡口失败：缺少 ${STAGE_DIR[stageName]}/candidate.page.json，请先由 Code Agent 生成候选稿。`);
   }
-  if (stageName === "stage_2_components") {
-    const stage1Approved = await readJson<PageSchema>(stageFiles(projectRoot, "stage_1_skeleton").approved);
-    return buildComponentsStage(projectRoot, stage1Approved);
-  }
-  const stage2Approved = await readJson<PageSchema>(stageFiles(projectRoot, "stage_2_components").approved);
-  return buildContentStage(projectRoot, stage2Approved);
 }
 
 async function verifyInputReadonly(projectRoot: string, snapshots: Record<string, string>): Promise<void> {
@@ -128,13 +116,9 @@ export async function runMainline(projectRoot = process.cwd()): Promise<void> {
 
   for (const stageName of MAINLINE_ORDER) {
     await assertHardGate(projectRoot, stageName);
+    await assertCandidateExists(projectRoot, stageName);
     const files = stageFiles(projectRoot, stageName);
-
-    const candidate = await generateStageCandidate(projectRoot, stageName);
-    await writeStageFile(projectRoot, stageName, files.prompt, `${candidate.prompt}\n`);
-    await writeStageFile(projectRoot, stageName, files.context, `${JSON.stringify(candidate.context, null, 2)}\n`);
-    await writeStageFile(projectRoot, stageName, files.candidate, `${JSON.stringify(candidate.page, null, 2)}\n`);
-    await appendRunLog(projectRoot, `${stageName} 已生成 candidate.page.json。`);
+    await appendRunLog(projectRoot, `${stageName} 检测到 candidate.page.json，开始评估。`);
 
     const previousApproved =
       stageName === "stage_1_skeleton"
