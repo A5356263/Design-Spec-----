@@ -4,7 +4,13 @@ import { fileURLToPath } from "node:url";
 import { evaluateCandidateFile } from "./evaluate";
 import { freezeStage } from "./freeze";
 import { hasUnresolvedRollback } from "./rollback";
-import { MAINLINE_ORDER, PageSchema, StageName, STAGE_DIR } from "./schema";
+import { PageSchema, StageName, STAGE_DIR } from "./schema";
+
+type RuntimeState = {
+  current_stage: StageName | "completed";
+  last_passed_stage: StageName | null;
+  can_advance: boolean;
+};
 
 export function stageFiles(projectRoot: string, stageName: StageName): Record<string, string> {
   const base = path.join(projectRoot, STAGE_DIR[stageName]);
@@ -34,6 +40,10 @@ async function writeJson(filePath: string, data: unknown): Promise<void> {
   await writeFile(filePath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
 }
 
+async function readRuntimeState(projectRoot: string): Promise<RuntimeState> {
+  return readJson<RuntimeState>(path.join(projectRoot, "workdir/runtime/state.json"));
+}
+
 async function assertHardGate(projectRoot: string, stageName: StageName): Promise<void> {
   if (stageName === "stage_2_components") {
     const prevApproved = stageFiles(projectRoot, "stage_1_skeleton").approved;
@@ -56,11 +66,28 @@ async function appendRunLog(projectRoot: string, message: string): Promise<void>
   await writeFile(runLogPath, `${oldLog.trimEnd()}\n- [${now}] ${message}\n`, "utf8");
 }
 
-async function assertCandidateExists(projectRoot: string, stageName: StageName): Promise<void> {
-  const candidatePath = stageFiles(projectRoot, stageName).candidate;
-  if (!(await exists(candidatePath))) {
-    throw new Error(`硬卡口失败：缺少 ${STAGE_DIR[stageName]}/candidate.page.json，请先由 Code Agent 生成候选稿。`);
+async function waitForAgentArtifacts(projectRoot: string, stageName: StageName): Promise<boolean> {
+  const files = stageFiles(projectRoot, stageName);
+  const hasCandidate = await exists(files.candidate);
+  const hasEvaluation = await exists(files.evaluation);
+  if (!hasCandidate || !hasEvaluation) {
+    const missing = [
+      !hasCandidate ? "candidate.page.json" : "",
+      !hasEvaluation ? "evaluation.md" : ""
+    ].filter(Boolean).join(" 和 ");
+    await appendRunLog(projectRoot, `${stageName} 等待 Code Agent 产物：${missing}。`);
+    return false;
   }
+  return true;
+}
+
+function parseAgentEvaluation(raw: string): boolean {
+  const normalized = raw.replace(/^\uFEFF/, "");
+  const match = normalized.match(/是否通过[:：]\s*(通过|不通过)/);
+  if (!match) {
+    throw new Error("硬卡口失败：evaluation.md 缺少“是否通过：通过 / 不通过”字段。");
+  }
+  return match[1] === "通过";
 }
 
 async function verifyInputReadonly(projectRoot: string, snapshots: Record<string, string>): Promise<void> {
@@ -89,10 +116,6 @@ async function finalize(projectRoot: string): Promise<void> {
   if (!(await exists(stage3.approved))) {
     throw new Error("无法生成 final：缺少 stage_3_content/approved.page.json。");
   }
-  const evalText = await readFile(stage3.evaluation, "utf8");
-  if (!evalText.includes("是否通过：通过")) {
-    throw new Error("无法生成 final：阶段三评估未通过。");
-  }
   if (await hasUnresolvedRollback(projectRoot)) {
     throw new Error("无法生成 final：存在未解决的回退记录。");
   }
@@ -114,11 +137,23 @@ export async function runMainline(projectRoot = process.cwd()): Promise<void> {
   const inputSnapshots = await collectInputSnapshots(projectRoot);
   await appendRunLog(projectRoot, "主链路开始执行。");
 
-  for (const stageName of MAINLINE_ORDER) {
+  while (true) {
+    const state = await readRuntimeState(projectRoot);
+    if (state.current_stage === "completed") {
+      await finalize(projectRoot);
+      await appendRunLog(projectRoot, "final.page.json 已汇总完成。");
+      await verifyInputReadonly(projectRoot, inputSnapshots);
+      return;
+    }
+
+    const stageName = state.current_stage;
     await assertHardGate(projectRoot, stageName);
-    await assertCandidateExists(projectRoot, stageName);
+    if (!(await waitForAgentArtifacts(projectRoot, stageName))) {
+      await verifyInputReadonly(projectRoot, inputSnapshots);
+      return;
+    }
     const files = stageFiles(projectRoot, stageName);
-    await appendRunLog(projectRoot, `${stageName} 检测到 candidate.page.json，开始评估。`);
+    await appendRunLog(projectRoot, `${stageName} 检测到 candidate.page.json 与 evaluation.md，开始处理。`);
 
     const previousApproved =
       stageName === "stage_1_skeleton"
@@ -127,18 +162,22 @@ export async function runMainline(projectRoot = process.cwd()): Promise<void> {
           ? stageFiles(projectRoot, "stage_1_skeleton").approved
           : stageFiles(projectRoot, "stage_2_components").approved;
 
-    const evaluation = await evaluateCandidateFile(projectRoot, stageName, files.candidate, files.evaluation, previousApproved);
-    if (!evaluation.passed) {
-      await appendRunLog(projectRoot, `${stageName} 评估不通过，主链路停止。`);
+    const hardGate = await evaluateCandidateFile(projectRoot, stageName, files.candidate, previousApproved);
+    if (!hardGate.passed) {
+      await appendRunLog(projectRoot, `${stageName} 硬门卡不通过，主链路停止。`);
+      await verifyInputReadonly(projectRoot, inputSnapshots);
+      return;
+    }
+
+    const evaluationPassed = parseAgentEvaluation(await readFile(files.evaluation, "utf8"));
+    if (!evaluationPassed) {
+      await appendRunLog(projectRoot, `${stageName} Agent 评估为不通过，停留当前阶段。`);
+      await verifyInputReadonly(projectRoot, inputSnapshots);
       return;
     }
 
     await freezeStage(projectRoot, stageName);
   }
-
-  await finalize(projectRoot);
-  await appendRunLog(projectRoot, "final.page.json 已汇总完成。");
-  await verifyInputReadonly(projectRoot, inputSnapshots);
 }
 
 const entryPath = process.argv[1] ? path.resolve(process.argv[1]) : "";

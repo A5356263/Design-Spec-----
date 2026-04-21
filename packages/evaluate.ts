@@ -1,17 +1,10 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { EvaluationResult, PageSchema, StageName, toCatalogStage } from "./schema";
-import { writeStageFile } from "./stage-guard";
 
 type CatalogTypeRule = { stage: string[]; props: string[] };
 type AntLiteCatalog = {
   types: Record<string, CatalogTypeRule>;
-};
-type DesignSection = {
-  title: string;
-  lines: string[];
-  bullets: string[];
-  ordered: string[];
 };
 
 function isRecord(input: unknown): input is Record<string, unknown> {
@@ -29,33 +22,6 @@ function parsePageSchema(raw: string): { page: PageSchema | null; parseError: st
     const reason = err instanceof Error ? err.message : "未知错误";
     return { page: null, parseError: `候选稿 JSON 解析失败：${reason}` };
   }
-}
-
-function cleanLine(line: string): string {
-  return line.trim().replace(/^[*-]\s+/, "").replace(/^\d+\.\s+/, "").trim();
-}
-
-function parseDesignSections(markdown: string): DesignSection[] {
-  const lines = markdown.replace(/^\uFEFF/, "").split(/\r?\n/);
-  const headings: Array<{ index: number; title: string }> = [];
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const match = lines[i].match(/^##\s+(.*)$/);
-    if (match) {
-      headings.push({ index: i, title: match[1].trim() });
-    }
-  }
-
-  return headings.map((heading, idx) => {
-    const end = headings[idx + 1]?.index ?? lines.length;
-    const body = lines.slice(heading.index + 1, end).map((line) => line.trim()).filter(Boolean);
-    return {
-      title: heading.title,
-      lines: body,
-      bullets: body.filter((line) => /^[-*]\s+/.test(line)).map(cleanLine),
-      ordered: body.filter((line) => /^\d+\.\s+/.test(line)).map(cleanLine)
-    };
-  });
 }
 
 function validateByProtocol(page: PageSchema, stageName: StageName, catalog: AntLiteCatalog): EvaluationResult {
@@ -151,118 +117,6 @@ function validateByProtocol(page: PageSchema, stageName: StageName, catalog: Ant
   return { passed: issues.length === 0, issues, instructions };
 }
 
-function collectTextFields(page: PageSchema): string[] {
-  const results: string[] = [];
-  for (const node of Object.values(page.elements)) {
-    if (!isRecord(node.props)) continue;
-    const title = node.props.title;
-    const text = node.props.text;
-    const label = node.props.label;
-    if (typeof title === "string") results.push(title);
-    if (typeof text === "string") results.push(text);
-    if (typeof label === "string") results.push(label);
-  }
-  return results;
-}
-
-function countNodeType(page: PageSchema, type: string): number {
-  return Object.values(page.elements).filter((node) => node.type === type).length;
-}
-
-function validateIntentByDesign(page: PageSchema, stageName: StageName, designSpec: string): string[] {
-  const issues: string[] = [];
-  const sections = parseDesignSections(designSpec);
-  const texts = collectTextFields(page);
-  const hasText = (keyword: string): boolean => texts.some((item) => item.includes(keyword));
-
-  const contentSections = sections.filter(
-    (section) =>
-      !["页面目标", "页面整体布局", "风格要求", "三阶段要求"].includes(section.title) &&
-      !/^阶段[一二三]/.test(section.title) &&
-      !section.title.startsWith("页面需求：")
-  );
-  for (const section of contentSections) {
-    if (/字段固定为|表格列固定为|展示以下静态提示|展示以下静态汇总/.test(section.lines.join("\n"))) {
-      if (!hasText(section.title)) {
-        issues.push(`意图校验失败：未覆盖设计文档关键模块 ${section.title}。`);
-      }
-    }
-  }
-
-  if (designSpec.includes("左右布局")) {
-    const hasHorizontalFlex = Object.values(page.elements).some(
-      (node) => node.type === "Flex" && node.props.direction === "horizontal"
-    );
-    if (!hasHorizontalFlex) {
-      issues.push("意图校验失败：设计文档要求左右布局，但产物中未体现水平布局容器。");
-    }
-  }
-
-  const buttonLabels = contentSections
-    .filter((section) => /按钮|操作/.test(section.title) || section.lines.some((line) => line.includes("按钮")))
-    .flatMap((section) => section.bullets)
-    .filter((item) => !item.includes("：") && /保存|提交|取消|查询|确认|新增/.test(item));
-  if (stageName !== "stage_1_skeleton") {
-    for (const label of buttonLabels) {
-      if (!hasText(label)) {
-        issues.push(`意图校验失败：遗漏文档中的关键操作 ${label}。`);
-      }
-    }
-  }
-
-  if (stageName !== "stage_1_skeleton") {
-    if (contentSections.some((section) => /字段固定为|使用表单/.test(section.lines.join("\n"))) && countNodeType(page, "Form") === 0) {
-      issues.push("意图校验失败：设计文档要求表单类结构，但产物中缺少 Form。");
-    }
-    if (contentSections.some((section) => /表格/.test(section.lines.join("\n"))) && countNodeType(page, "Table") === 0) {
-      issues.push("意图校验失败：设计文档要求表格类结构，但产物中缺少 Table。");
-    }
-    if (designSpec.includes("状态标签") && countNodeType(page, "Tag") === 0) {
-      issues.push("意图校验失败：设计文档要求状态标签，但产物中缺少 Tag。");
-    }
-    if (contentSections.some((section) => /汇总/.test(section.title)) && countNodeType(page, "Descriptions") === 0) {
-      issues.push("意图校验失败：设计文档要求汇总信息，但产物中缺少 Descriptions。");
-    }
-  }
-
-  if (stageName === "stage_3_content") {
-    const sampleRowCount = contentSections
-      .flatMap((section) => section.ordered)
-      .filter((item) => item.includes("/")).length;
-    if (sampleRowCount > 0) {
-      const rowsCount = Object.values(page.elements)
-        .filter((node) => node.type === "Table" && isRecord(node.props) && Array.isArray(node.props.rows))
-        .reduce((max, node) => Math.max(max, (node.props.rows as unknown[]).length), 0);
-      if (rowsCount < sampleRowCount) {
-        issues.push(`意图校验失败：示例数据条数不足，当前 ${rowsCount} 条，文档要求至少 ${sampleRowCount} 条。`);
-      }
-    }
-
-    const summaryItemCount = contentSections
-      .filter((section) => /汇总/.test(section.title))
-      .flatMap((section) => section.bullets.filter((item) => /[:：]/.test(item))).length;
-    if (summaryItemCount > 0) {
-      const descriptionItemsCount = Object.values(page.elements)
-        .filter((node) => node.type === "Descriptions" && isRecord(node.props) && Array.isArray(node.props.items))
-        .reduce((max, node) => Math.max(max, (node.props.items as unknown[]).length), 0);
-      if (descriptionItemsCount < summaryItemCount) {
-        issues.push(`意图校验失败：汇总项不足，当前 ${descriptionItemsCount} 项，文档要求至少 ${summaryItemCount} 项。`);
-      }
-    }
-
-    const staticTexts = contentSections
-      .filter((section) => /提示|规则/.test(section.title))
-      .flatMap((section) => section.bullets);
-    for (const text of staticTexts) {
-      if (!hasText(text)) {
-        issues.push(`意图校验失败：遗漏文档中的静态提示 ${text}。`);
-      }
-    }
-  }
-
-  return issues;
-}
-
 export function formatEvaluationMarkdown(result: EvaluationResult): string {
   const issues = result.issues.length > 0 ? result.issues : ["无"];
   const instructions = result.instructions.length > 0 ? result.instructions : ["无", "无", "无"];
@@ -327,7 +181,6 @@ export async function evaluateCandidateFile(
   projectRoot: string,
   stageName: StageName,
   candidateFile: string,
-  evaluationFile: string,
   previousApprovedFile?: string
 ): Promise<EvaluationResult> {
   const raw = await readFile(candidateFile, "utf8");
@@ -343,20 +196,6 @@ export async function evaluateCandidateFile(
       }
     : validateByProtocol(page as PageSchema, stageName, catalog);
 
-  if (!parseError) {
-    const designSpecRaw = await readFile(path.join(projectRoot, "input/design_spec.md"), "utf8");
-    const intentIssues = validateIntentByDesign(page as PageSchema, stageName, designSpecRaw);
-    if (intentIssues.length > 0) {
-      result.passed = false;
-      result.issues.push(...intentIssues);
-      result.instructions = [
-        "按当前 design_spec 的关键结构诉求补齐模块与布局。",
-        "补齐 design_spec 中明确声明的关键组件与操作。",
-        "阶段三需要补齐示例数据、静态提示或汇总信息后重新评估。"
-      ];
-    }
-  }
-
   if (!parseError && previousApprovedFile) {
     const prevRaw = await readFile(previousApprovedFile, "utf8");
     const prev = JSON.parse(prevRaw.replace(/^\uFEFF/, "")) as PageSchema;
@@ -371,7 +210,5 @@ export async function evaluateCandidateFile(
       ];
     }
   }
-
-  await writeStageFile(projectRoot, stageName, evaluationFile, `${formatEvaluationMarkdown(result)}\n`);
   return result;
 }

@@ -2,6 +2,8 @@
 
 ## 真源文件
 
+- `AGENT_ENTRY.md`
+- `AGENT_STAGE_TASK_TEMPLATE.md`
 - `input/design_spec.md`
 - `input/constraints.md`
 - `input/references.md`
@@ -24,7 +26,9 @@
 - 项目不提供脚本内 LLM 调用能力
 - 项目不提供页面理解器
 - 项目不提供页面生成器
+- 项目不提供语义评估器
 - `candidate.page.json` 由外部 Code Agent 落盘
+- `evaluation.md` 由外部 Code Agent 落盘
 
 ## 执行命令
 

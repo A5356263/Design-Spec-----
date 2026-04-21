@@ -23,7 +23,6 @@ async function testCatalogDynamicLoad(root: string): Promise<void> {
   const catalogPath = path.join(root, "config/ANT_LITE_CATALOG.json");
   const stageDir = path.join(root, "workdir/workspace/stage_2_components");
   const candidatePath = path.join(stageDir, "candidate.page.json");
-  const evaluationPath = path.join(stageDir, "evaluation.md");
 
   const oldCatalogRaw = await readFile(catalogPath, "utf8");
   const catalog = JSON.parse(oldCatalogRaw.replace(/^\uFEFF/, ""));
@@ -31,13 +30,13 @@ async function testCatalogDynamicLoad(root: string): Promise<void> {
   try {
     delete catalog.types.Button;
     await writeFile(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
-    const failResult = await evaluateCandidateFile(root, "stage_2_components", candidatePath, evaluationPath);
+    const failResult = await evaluateCandidateFile(root, "stage_2_components", candidatePath);
     assert.equal(failResult.passed, false, "移除 Button 后评估应失败");
   } finally {
     await writeFile(catalogPath, oldCatalogRaw.endsWith("\n") ? oldCatalogRaw : `${oldCatalogRaw}\n`, "utf8");
   }
 
-  const passResult = await evaluateCandidateFile(root, "stage_2_components", candidatePath, evaluationPath);
+  const passResult = await evaluateCandidateFile(root, "stage_2_components", candidatePath);
   assert.equal(passResult.passed, true, "恢复 catalog 后评估应通过");
 }
 
@@ -72,15 +71,74 @@ async function testRollbackGate(root: string): Promise<void> {
 
 async function testMainlineRequiresExternalCandidate(root: string): Promise<void> {
   const stage1 = stageFiles(root, "stage_1_skeleton");
+  const statePath = path.join(root, "workdir/runtime/state.json");
   const originalCandidate = await readFile(stage1.candidate, "utf8");
+  const originalState = await readFile(statePath, "utf8");
   try {
+    await writeFile(statePath, `${JSON.stringify({
+      current_stage: "stage_1_skeleton",
+      last_passed_stage: null,
+      can_advance: true
+    }, null, 2)}\n`, "utf8");
     await unlink(stage1.candidate);
-    await assert.rejects(
-      () => runMainline(root),
-      /candidate\.page\.json/
-    );
+    await runMainline(root);
+    const nextState = JSON.parse((await readFile(statePath, "utf8")).replace(/^\uFEFF/, ""));
+    assert.equal(nextState.current_stage, "stage_1_skeleton", "缺少 candidate 时应停留在当前阶段等待");
   } finally {
+    await writeFile(statePath, originalState.endsWith("\n") ? originalState : `${originalState}\n`, "utf8");
     await writeFile(stage1.candidate, originalCandidate.endsWith("\n") ? originalCandidate : `${originalCandidate}\n`, "utf8");
+  }
+}
+
+async function testMainlineRequiresExternalEvaluation(root: string): Promise<void> {
+  const stage1 = stageFiles(root, "stage_1_skeleton");
+  const statePath = path.join(root, "workdir/runtime/state.json");
+  const originalEvaluation = await readFile(stage1.evaluation, "utf8");
+  const originalState = await readFile(statePath, "utf8");
+  try {
+    await writeFile(statePath, `${JSON.stringify({
+      current_stage: "stage_1_skeleton",
+      last_passed_stage: null,
+      can_advance: true
+    }, null, 2)}\n`, "utf8");
+    await unlink(stage1.evaluation);
+    await runMainline(root);
+    const nextState = JSON.parse((await readFile(statePath, "utf8")).replace(/^\uFEFF/, ""));
+    assert.equal(nextState.current_stage, "stage_1_skeleton", "缺少 evaluation 时应停留在当前阶段等待");
+  } finally {
+    await writeFile(statePath, originalState.endsWith("\n") ? originalState : `${originalState}\n`, "utf8");
+    await writeFile(stage1.evaluation, originalEvaluation.endsWith("\n") ? originalEvaluation : `${originalEvaluation}\n`, "utf8");
+  }
+}
+
+async function testAgentEvaluationControlsAdvance(root: string): Promise<void> {
+  const stage1 = stageFiles(root, "stage_1_skeleton");
+  const statePath = path.join(root, "workdir/runtime/state.json");
+  const originalEvaluation = await readFile(stage1.evaluation, "utf8");
+  const originalState = await readFile(statePath, "utf8");
+  try {
+    await writeFile(statePath, `${JSON.stringify({
+      current_stage: "stage_1_skeleton",
+      last_passed_stage: null,
+      can_advance: true
+    }, null, 2)}\n`, "utf8");
+    await writeFile(stage1.evaluation, [
+      "# 评估结果",
+      "",
+      "是否通过：不通过",
+      "",
+      "## 问题",
+      "1. 外部 Agent 判定当前阶段未完成。",
+      "",
+      "## 修改指令",
+      "1. 继续修复当前阶段。"
+    ].join("\n") + "\n", "utf8");
+    await runMainline(root);
+    const nextState = JSON.parse((await readFile(statePath, "utf8")).replace(/^\uFEFF/, ""));
+    assert.equal(nextState.current_stage, "stage_1_skeleton", "Agent 评估不通过时不应推进阶段");
+  } finally {
+    await writeFile(statePath, originalState.endsWith("\n") ? originalState : `${originalState}\n`, "utf8");
+    await writeFile(stage1.evaluation, originalEvaluation.endsWith("\n") ? originalEvaluation : `${originalEvaluation}\n`, "utf8");
   }
 }
 
@@ -91,6 +149,8 @@ async function main(): Promise<void> {
   await testCatalogDynamicLoad(root);
   await testRollbackGate(root);
   await testMainlineRequiresExternalCandidate(root);
+  await testMainlineRequiresExternalEvaluation(root);
+  await testAgentEvaluationControlsAdvance(root);
   console.log("acceptance passed");
 }
 
