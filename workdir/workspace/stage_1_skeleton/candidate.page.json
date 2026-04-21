@@ -1,37 +1,114 @@
 {
-  "root": "demo-root",
+  "root": "node-1",
   "elements": {
-    "demo-root": {
+    "node-1": {
       "type": "Flex",
       "props": {
         "direction": "vertical",
-        "gap": 12
+        "gap": 16
       },
       "children": [
-        "demo-header",
-        "demo-body"
+        "node-2",
+        "node-3",
+        "node-11",
+        "node-12",
+        "node-13"
       ]
     },
-    "demo-header": {
+    "node-2": {
       "type": "Card",
       "props": {
-        "title": "页面标题：差旅报销申请"
-      },
-      "children": [
-        "demo-title"
-      ]
-    },
-    "demo-title": {
-      "type": "TypographyText",
-      "props": {
-        "text": "阶段一占位文本"
+        "title": "顶部标题与操作区"
       },
       "children": []
     },
-    "demo-body": {
+    "node-3": {
+      "type": "Flex",
+      "props": {
+        "direction": "horizontal",
+        "gap": 16
+      },
+      "children": [
+        "node-4",
+        "node-8"
+      ]
+    },
+    "node-4": {
       "type": "Card",
       "props": {
-        "title": "内容区域占位"
+        "title": "左侧主要填写区",
+        "width": "70%"
+      },
+      "children": [
+        "node-5",
+        "node-6",
+        "node-7"
+      ]
+    },
+    "node-5": {
+      "type": "Card",
+      "props": {
+        "title": "模块一：基础信息"
+      },
+      "children": []
+    },
+    "node-6": {
+      "type": "Card",
+      "props": {
+        "title": "模块二：费用明细"
+      },
+      "children": []
+    },
+    "node-7": {
+      "type": "Card",
+      "props": {
+        "title": "模块三：补充说明"
+      },
+      "children": []
+    },
+    "node-8": {
+      "type": "Card",
+      "props": {
+        "title": "右侧辅助信息区",
+        "width": "30%"
+      },
+      "children": [
+        "node-9",
+        "node-10"
+      ]
+    },
+    "node-9": {
+      "type": "Card",
+      "props": {
+        "title": "卡片一：报销规则提示"
+      },
+      "children": []
+    },
+    "node-10": {
+      "type": "Card",
+      "props": {
+        "title": "卡片二：汇总信息"
+      },
+      "children": []
+    },
+    "node-11": {
+      "type": "Card",
+      "props": {
+        "title": "底部操作区"
+      },
+      "children": []
+    },
+    "node-12": {
+      "type": "Card",
+      "props": {
+        "title": "设计说明"
+      },
+      "children": []
+    },
+    "node-13": {
+      "type": "Card",
+      "props": {
+        "title": "中间主体区"
       },
       "children": []
     }

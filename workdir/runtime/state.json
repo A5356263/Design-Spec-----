@@ -1,5 +1,5 @@
 {
-  "current_stage": "completed",
-  "last_passed_stage": "stage_3_content",
-  "can_advance": false
+  "current_stage": "stage_3_content",
+  "last_passed_stage": "stage_2_components",
+  "can_advance": true
 }

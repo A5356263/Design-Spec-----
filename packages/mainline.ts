@@ -9,6 +9,7 @@ import { writeStageFile } from "./stage-guard";
 import { buildComponentsStage } from "./stage_components";
 import { buildContentStage } from "./stage_content";
 import { buildSkeletonStage } from "./stage_skeleton";
+import { AgentArtifacts } from "./document-agent";
 
 function stageFiles(projectRoot: string, stageName: StageName): Record<string, string> {
   const base = path.join(projectRoot, STAGE_DIR[stageName]);
@@ -16,7 +17,9 @@ function stageFiles(projectRoot: string, stageName: StageName): Record<string, s
     base,
     candidate: path.join(base, "candidate.page.json"),
     approved: path.join(base, "approved.page.json"),
-    evaluation: path.join(base, "evaluation.md")
+    evaluation: path.join(base, "evaluation.md"),
+    prompt: path.join(base, "agent-prompt.md"),
+    context: path.join(base, "agent-context.json")
   };
 }
 
@@ -60,18 +63,16 @@ async function appendRunLog(projectRoot: string, message: string): Promise<void>
   await writeFile(runLogPath, `${oldLog.trimEnd()}\n- [${now}] ${message}\n`, "utf8");
 }
 
-async function generateStageCandidate(projectRoot: string, stageName: StageName): Promise<PageSchema> {
+async function generateStageCandidate(projectRoot: string, stageName: StageName): Promise<AgentArtifacts> {
   if (stageName === "stage_1_skeleton") {
-    const designSpec = await readFile(path.join(projectRoot, "input/design_spec.md"), "utf8");
-    await readFile(path.join(projectRoot, "input/constraints.md"), "utf8");
-    return buildSkeletonStage(designSpec);
+    return buildSkeletonStage(projectRoot);
   }
   if (stageName === "stage_2_components") {
     const stage1Approved = await readJson<PageSchema>(stageFiles(projectRoot, "stage_1_skeleton").approved);
-    return buildComponentsStage(stage1Approved);
+    return buildComponentsStage(projectRoot, stage1Approved);
   }
   const stage2Approved = await readJson<PageSchema>(stageFiles(projectRoot, "stage_2_components").approved);
-  return buildContentStage(stage2Approved);
+  return buildContentStage(projectRoot, stage2Approved);
 }
 
 async function verifyInputReadonly(projectRoot: string, snapshots: Record<string, string>): Promise<void> {
@@ -119,6 +120,9 @@ async function finalize(projectRoot: string): Promise<void> {
 }
 
 export async function runMainline(projectRoot = process.cwd()): Promise<void> {
+  if (await hasUnresolvedRollback(projectRoot)) {
+    throw new Error("无法推进主链路：存在未解决的回退记录。");
+  }
   const inputSnapshots = await collectInputSnapshots(projectRoot);
   await appendRunLog(projectRoot, "主链路开始执行。");
 
@@ -127,7 +131,9 @@ export async function runMainline(projectRoot = process.cwd()): Promise<void> {
     const files = stageFiles(projectRoot, stageName);
 
     const candidate = await generateStageCandidate(projectRoot, stageName);
-    await writeStageFile(projectRoot, stageName, files.candidate, `${JSON.stringify(candidate, null, 2)}\n`);
+    await writeStageFile(projectRoot, stageName, files.prompt, `${candidate.prompt}\n`);
+    await writeStageFile(projectRoot, stageName, files.context, `${JSON.stringify(candidate.context, null, 2)}\n`);
+    await writeStageFile(projectRoot, stageName, files.candidate, `${JSON.stringify(candidate.page, null, 2)}\n`);
     await appendRunLog(projectRoot, `${stageName} 已生成 candidate.page.json。`);
 
     const previousApproved =

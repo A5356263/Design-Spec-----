@@ -1,92 +1,258 @@
 {
-  "root": "demo-root",
+  "root": "node-1",
   "elements": {
-    "demo-root": {
+    "node-1": {
       "type": "Flex",
       "props": {
         "direction": "vertical",
-        "gap": 12
+        "gap": 16
       },
       "children": [
-        "demo-header",
-        "demo-body"
+        "node-2",
+        "node-3",
+        "node-10",
+        "node-11"
       ]
     },
-    "demo-header": {
+    "node-2": {
       "type": "Card",
       "props": {
-        "title": "页面标题：差旅报销申请"
+        "title": "顶部标题与操作区"
       },
       "children": [
-        "demo-title"
+        "node-12",
+        "node-13",
+        "node-14",
+        "node-15"
       ]
     },
-    "demo-title": {
-      "type": "TypographyText",
+    "node-3": {
+      "type": "Flex",
       "props": {
-        "text": "阶段一占位文本"
+        "direction": "horizontal",
+        "gap": 16
+      },
+      "children": [
+        "node-4",
+        "node-7"
+      ]
+    },
+    "node-4": {
+      "type": "Card",
+      "props": {
+        "title": "左侧主要填写区",
+        "width": "70%"
+      },
+      "children": [
+        "node-5",
+        "node-6",
+        "node-18"
+      ]
+    },
+    "node-5": {
+      "type": "Card",
+      "props": {
+        "title": "模块一：申请信息"
       },
       "children": []
     },
-    "demo-body": {
+    "node-6": {
       "type": "Card",
       "props": {
-        "title": "内容区域占位"
+        "title": "模块二：借用清单"
       },
       "children": [
-        "demo-toolbar",
-        "demo-table"
+        "node-19"
       ]
     },
-    "demo-toolbar": {
+    "node-7": {
+      "type": "Card",
+      "props": {
+        "title": "右侧辅助信息区",
+        "width": "30%"
+      },
+      "children": [
+        "node-8",
+        "node-9"
+      ]
+    },
+    "node-8": {
+      "type": "Card",
+      "props": {
+        "title": "卡片一：借用规则"
+      },
+      "children": [
+        "node-20",
+        "node-21"
+      ]
+    },
+    "node-9": {
+      "type": "Card",
+      "props": {
+        "title": "卡片二：库存摘要"
+      },
+      "children": []
+    },
+    "node-10": {
+      "type": "Card",
+      "props": {
+        "title": "底部操作区"
+      },
+      "children": [
+        "node-22"
+      ]
+    },
+    "node-11": {
+      "type": "Card",
+      "props": {
+        "title": "设计说明"
+      },
+      "children": []
+    },
+    "node-12": {
+      "type": "TypographyText",
+      "props": {
+        "text": "设备借用申请",
+        "level": "h3"
+      },
+      "children": []
+    },
+    "node-13": {
+      "type": "TypographyText",
+      "props": {
+        "text": "用于提交设备借用申请"
+      },
+      "children": []
+    },
+    "node-14": {
+      "type": "Tag",
+      "props": {
+        "label": "待填写",
+        "tone": "default"
+      },
+      "children": []
+    },
+    "node-15": {
       "type": "Space",
       "props": {
         "direction": "horizontal",
         "gap": 8
       },
       "children": [
-        "demo-search-input",
-        "demo-search-btn"
+        "node-16",
+        "node-17"
       ]
     },
-    "demo-search-input": {
-      "type": "Input",
-      "props": {
-        "placeholder": "请输入关键词"
-      },
-      "children": []
-    },
-    "demo-search-btn": {
+    "node-16": {
       "type": "Button",
       "props": {
-        "label": "查询",
+        "label": "保存草稿",
         "variant": "primary"
       },
       "children": []
     },
-    "demo-table": {
+    "node-17": {
+      "type": "Button",
+      "props": {
+        "label": "提交申请",
+        "variant": "primary"
+      },
+      "children": []
+    },
+    "node-18": {
       "type": "Table",
       "props": {
         "columns": [
           {
-            "title": "名称",
-            "dataIndex": "name"
+            "title": "申请单编号",
+            "dataIndex": "申请单编号"
           },
           {
-            "title": "状态",
-            "dataIndex": "status"
+            "title": "申请人",
+            "dataIndex": "申请人"
+          },
+          {
+            "title": "借用部门",
+            "dataIndex": "借用部门"
+          },
+          {
+            "title": "设备名称",
+            "dataIndex": "设备名称"
+          },
+          {
+            "title": "数量",
+            "dataIndex": "数量"
+          },
+          {
+            "title": "借用日期",
+            "dataIndex": "借用日期"
           }
         ],
-        "rows": [
+        "bordered": true,
+        "rows": []
+      },
+      "children": []
+    },
+    "node-19": {
+      "type": "Table",
+      "props": {
+        "columns": [
           {
-            "name": "样例 A",
-            "status": "正常"
+            "title": "设备名称",
+            "dataIndex": "设备名称"
           },
           {
-            "name": "样例 B",
-            "status": "待处理"
+            "title": "数量",
+            "dataIndex": "数量"
+          },
+          {
+            "title": "借用日期",
+            "dataIndex": "借用日期"
           }
-        ]
+        ],
+        "bordered": true,
+        "rows": []
+      },
+      "children": []
+    },
+    "node-20": {
+      "type": "TypographyText",
+      "props": {
+        "text": "设备归还前不得重复申请"
+      },
+      "children": []
+    },
+    "node-21": {
+      "type": "TypographyText",
+      "props": {
+        "text": "高价值设备需主管审批"
+      },
+      "children": []
+    },
+    "node-22": {
+      "type": "Space",
+      "props": {
+        "direction": "horizontal",
+        "gap": 8
+      },
+      "children": [
+        "node-23",
+        "node-24"
+      ]
+    },
+    "node-23": {
+      "type": "Button",
+      "props": {
+        "label": "取消",
+        "variant": "default"
+      },
+      "children": []
+    },
+    "node-24": {
+      "type": "Button",
+      "props": {
+        "label": "提交申请",
+        "variant": "primary"
       },
       "children": []
     }

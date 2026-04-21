@@ -1,5 +1,6 @@
-﻿import { readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { parseSections } from "./document-agent";
 import { EvaluationResult, PageSchema, StageName, toCatalogStage } from "./schema";
 import { writeStageFile } from "./stage-guard";
 
@@ -118,6 +119,118 @@ function validateByProtocol(page: PageSchema, stageName: StageName, catalog: Ant
   return { passed: issues.length === 0, issues, instructions };
 }
 
+function collectTextFields(page: PageSchema): string[] {
+  const results: string[] = [];
+  for (const node of Object.values(page.elements)) {
+    if (!isRecord(node.props)) continue;
+    const title = node.props.title;
+    const text = node.props.text;
+    const label = node.props.label;
+    if (typeof title === "string") results.push(title);
+    if (typeof text === "string") results.push(text);
+    if (typeof label === "string") results.push(label);
+  }
+  return results;
+}
+
+function countNodeType(page: PageSchema, type: string): number {
+  return Object.values(page.elements).filter((node) => node.type === type).length;
+}
+
+function validateIntentByDesign(page: PageSchema, stageName: StageName, designSpec: string): string[] {
+  const issues: string[] = [];
+  const sections = parseSections(designSpec);
+  const texts = collectTextFields(page);
+  const hasText = (keyword: string): boolean => texts.some((item) => item.includes(keyword));
+
+  const contentSections = sections.filter(
+    (section) =>
+      !["页面目标", "页面整体布局", "风格要求", "三阶段要求"].includes(section.title) &&
+      !/^阶段[一二三]/.test(section.title) &&
+      !section.title.startsWith("页面需求：")
+  );
+  for (const section of contentSections) {
+    if (/字段固定为|表格列固定为|展示以下静态提示|展示以下静态汇总/.test(section.lines.join("\n"))) {
+      if (!hasText(section.title)) {
+        issues.push(`意图校验失败：未覆盖设计文档关键模块 ${section.title}。`);
+      }
+    }
+  }
+
+  if (designSpec.includes("左右布局")) {
+    const hasHorizontalFlex = Object.values(page.elements).some(
+      (node) => node.type === "Flex" && node.props.direction === "horizontal"
+    );
+    if (!hasHorizontalFlex) {
+      issues.push("意图校验失败：设计文档要求左右布局，但产物中未体现水平布局容器。");
+    }
+  }
+
+  const buttonLabels = contentSections
+    .filter((section) => /按钮|操作/.test(section.title) || section.lines.some((line) => line.includes("按钮")))
+    .flatMap((section) => section.bullets)
+    .filter((item) => !item.includes("：") && /保存|提交|取消|查询|确认|新增/.test(item));
+  if (stageName !== "stage_1_skeleton") {
+    for (const label of buttonLabels) {
+      if (!hasText(label)) {
+        issues.push(`意图校验失败：遗漏文档中的关键操作 ${label}。`);
+      }
+    }
+  }
+
+  if (stageName !== "stage_1_skeleton") {
+    if (contentSections.some((section) => /字段固定为|使用表单/.test(section.lines.join("\n"))) && countNodeType(page, "Form") === 0) {
+      issues.push("意图校验失败：设计文档要求表单类结构，但产物中缺少 Form。");
+    }
+    if (contentSections.some((section) => /表格/.test(section.lines.join("\n"))) && countNodeType(page, "Table") === 0) {
+      issues.push("意图校验失败：设计文档要求表格类结构，但产物中缺少 Table。");
+    }
+    if (designSpec.includes("状态标签") && countNodeType(page, "Tag") === 0) {
+      issues.push("意图校验失败：设计文档要求状态标签，但产物中缺少 Tag。");
+    }
+    if (contentSections.some((section) => /汇总/.test(section.title)) && countNodeType(page, "Descriptions") === 0) {
+      issues.push("意图校验失败：设计文档要求汇总信息，但产物中缺少 Descriptions。");
+    }
+  }
+
+  if (stageName === "stage_3_content") {
+    const sampleRowCount = contentSections
+      .flatMap((section) => section.ordered)
+      .filter((item) => item.includes("/")).length;
+    if (sampleRowCount > 0) {
+      const rowsCount = Object.values(page.elements)
+        .filter((node) => node.type === "Table" && isRecord(node.props) && Array.isArray(node.props.rows))
+        .reduce((max, node) => Math.max(max, (node.props.rows as unknown[]).length), 0);
+      if (rowsCount < sampleRowCount) {
+        issues.push(`意图校验失败：示例数据条数不足，当前 ${rowsCount} 条，文档要求至少 ${sampleRowCount} 条。`);
+      }
+    }
+
+    const summaryItemCount = contentSections
+      .filter((section) => /汇总/.test(section.title))
+      .flatMap((section) => section.bullets.filter((item) => /[:：]/.test(item))).length;
+    if (summaryItemCount > 0) {
+      const descriptionItemsCount = Object.values(page.elements)
+        .filter((node) => node.type === "Descriptions" && isRecord(node.props) && Array.isArray(node.props.items))
+        .reduce((max, node) => Math.max(max, (node.props.items as unknown[]).length), 0);
+      if (descriptionItemsCount < summaryItemCount) {
+        issues.push(`意图校验失败：汇总项不足，当前 ${descriptionItemsCount} 项，文档要求至少 ${summaryItemCount} 项。`);
+      }
+    }
+
+    const staticTexts = contentSections
+      .filter((section) => /提示|规则/.test(section.title))
+      .flatMap((section) => section.bullets);
+    for (const text of staticTexts) {
+      if (!hasText(text)) {
+        issues.push(`意图校验失败：遗漏文档中的静态提示 ${text}。`);
+      }
+    }
+  }
+
+  return issues;
+}
+
 export function formatEvaluationMarkdown(result: EvaluationResult): string {
   const issues = result.issues.length > 0 ? result.issues : ["无"];
   const instructions = result.instructions.length > 0 ? result.instructions : ["无", "无", "无"];
@@ -197,6 +310,20 @@ export async function evaluateCandidateFile(
         instructions: ["修复 candidate.page.json 的 JSON 结构。", "保持 root/elements 基本结构。", "完成修复后重新评估。"]
       }
     : validateByProtocol(page as PageSchema, stageName, catalog);
+
+  if (!parseError) {
+    const designSpecRaw = await readFile(path.join(projectRoot, "input/design_spec.md"), "utf8");
+    const intentIssues = validateIntentByDesign(page as PageSchema, stageName, designSpecRaw);
+    if (intentIssues.length > 0) {
+      result.passed = false;
+      result.issues.push(...intentIssues);
+      result.instructions = [
+        "按当前 design_spec 的关键结构诉求补齐模块与布局。",
+        "补齐 design_spec 中明确声明的关键组件与操作。",
+        "阶段三需要补齐示例数据、静态提示或汇总信息后重新评估。"
+      ];
+    }
+  }
 
   if (!parseError && previousApprovedFile) {
     const prevRaw = await readFile(previousApprovedFile, "utf8");

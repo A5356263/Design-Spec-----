@@ -2,12 +2,12 @@
   "stage": "stage_3_content",
   "status": "approved",
   "evaluation_passed": true,
-  "updated_at": "2026-04-21T12:32:26.063Z",
+  "updated_at": "2026-04-21T13:26:57.327Z",
   "rollback": {
     "from": "stage_3_content",
     "to": "stage_2_components",
     "reason": "acceptance-test",
-    "at": "2026-04-21T12:32:26.020Z",
+    "at": "2026-04-21T13:26:57.230Z",
     "resolved": true
   }
 }

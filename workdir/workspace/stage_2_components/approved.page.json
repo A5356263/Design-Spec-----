@@ -1,82 +1,415 @@
 {
-  "root": "demo-root",
+  "root": "node-1",
   "elements": {
-    "demo-root": {
+    "node-1": {
       "type": "Flex",
       "props": {
         "direction": "vertical",
-        "gap": 12
+        "gap": 16
       },
       "children": [
-        "demo-header",
-        "demo-body"
+        "node-2",
+        "node-3",
+        "node-11",
+        "node-12",
+        "node-13"
       ]
     },
-    "demo-header": {
+    "node-2": {
       "type": "Card",
       "props": {
-        "title": "页面标题：差旅报销申请"
+        "title": "顶部标题与操作区"
       },
       "children": [
-        "demo-title"
+        "node-14",
+        "node-15",
+        "node-16",
+        "node-17"
       ]
     },
-    "demo-title": {
-      "type": "TypographyText",
+    "node-3": {
+      "type": "Flex",
       "props": {
-        "text": "阶段一占位文本"
+        "direction": "horizontal",
+        "gap": 16
+      },
+      "children": [
+        "node-4",
+        "node-8"
+      ]
+    },
+    "node-4": {
+      "type": "Card",
+      "props": {
+        "title": "左侧主要填写区",
+        "width": "70%"
+      },
+      "children": [
+        "node-5",
+        "node-6",
+        "node-7",
+        "node-20"
+      ]
+    },
+    "node-5": {
+      "type": "Card",
+      "props": {
+        "title": "模块一：基础信息"
+      },
+      "children": [
+        "node-31"
+      ]
+    },
+    "node-6": {
+      "type": "Card",
+      "props": {
+        "title": "模块二：费用明细"
+      },
+      "children": [
+        "node-38"
+      ]
+    },
+    "node-7": {
+      "type": "Card",
+      "props": {
+        "title": "模块三：补充说明"
+      },
+      "children": [
+        "node-39"
+      ]
+    },
+    "node-8": {
+      "type": "Card",
+      "props": {
+        "title": "右侧辅助信息区",
+        "width": "30%"
+      },
+      "children": [
+        "node-9",
+        "node-10"
+      ]
+    },
+    "node-9": {
+      "type": "Card",
+      "props": {
+        "title": "卡片一：报销规则提示"
+      },
+      "children": [
+        "node-40",
+        "node-41",
+        "node-42"
+      ]
+    },
+    "node-10": {
+      "type": "Card",
+      "props": {
+        "title": "卡片二：汇总信息"
+      },
+      "children": [
+        "node-43"
+      ]
+    },
+    "node-11": {
+      "type": "Card",
+      "props": {
+        "title": "底部操作区"
+      },
+      "children": [
+        "node-44"
+      ]
+    },
+    "node-12": {
+      "type": "Card",
+      "props": {
+        "title": "设计说明"
       },
       "children": []
     },
-    "demo-body": {
+    "node-13": {
       "type": "Card",
       "props": {
-        "title": "内容区域占位"
+        "title": "中间主体区"
       },
-      "children": [
-        "demo-toolbar",
-        "demo-table"
-      ]
+      "children": []
     },
-    "demo-toolbar": {
+    "node-14": {
+      "type": "TypographyText",
+      "props": {
+        "text": "差旅报销申请",
+        "level": "h3"
+      },
+      "children": []
+    },
+    "node-15": {
+      "type": "TypographyText",
+      "props": {
+        "text": "用于创建并提交本次差旅报销"
+      },
+      "children": []
+    },
+    "node-16": {
+      "type": "Tag",
+      "props": {
+        "label": "草稿",
+        "tone": "default"
+      },
+      "children": []
+    },
+    "node-17": {
       "type": "Space",
       "props": {
         "direction": "horizontal",
         "gap": 8
       },
       "children": [
-        "demo-search-input",
-        "demo-search-btn"
+        "node-18",
+        "node-19"
       ]
     },
-    "demo-search-input": {
-      "type": "Input",
-      "props": {
-        "placeholder": "请输入关键词"
-      },
-      "children": []
-    },
-    "demo-search-btn": {
+    "node-18": {
       "type": "Button",
       "props": {
-        "label": "查询",
+        "label": "保存草稿",
         "variant": "primary"
       },
       "children": []
     },
-    "demo-table": {
+    "node-19": {
+      "type": "Button",
+      "props": {
+        "label": "提交审批",
+        "variant": "primary"
+      },
+      "children": []
+    },
+    "node-20": {
+      "type": "Form",
+      "props": {
+        "layout": "vertical"
+      },
+      "children": [
+        "node-21",
+        "node-22",
+        "node-23",
+        "node-24",
+        "node-25",
+        "node-26",
+        "node-27",
+        "node-28",
+        "node-29",
+        "node-30"
+      ]
+    },
+    "node-21": {
+      "type": "Input",
+      "props": {
+        "placeholder": "报销单编号（只读，占位展示即可）"
+      },
+      "children": []
+    },
+    "node-22": {
+      "type": "Input",
+      "props": {
+        "placeholder": "申请人"
+      },
+      "children": []
+    },
+    "node-23": {
+      "type": "Input",
+      "props": {
+        "placeholder": "所属部门"
+      },
+      "children": []
+    },
+    "node-24": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差事由"
+      },
+      "children": []
+    },
+    "node-25": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差开始日期"
+      },
+      "children": []
+    },
+    "node-26": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差结束日期"
+      },
+      "children": []
+    },
+    "node-27": {
+      "type": "Input",
+      "props": {
+        "placeholder": "日期"
+      },
+      "children": []
+    },
+    "node-28": {
+      "type": "Input",
+      "props": {
+        "placeholder": "费用类型"
+      },
+      "children": []
+    },
+    "node-29": {
+      "type": "Input",
+      "props": {
+        "placeholder": "金额"
+      },
+      "children": []
+    },
+    "node-30": {
+      "type": "Input",
+      "props": {
+        "placeholder": "说明"
+      },
+      "children": []
+    },
+    "node-31": {
+      "type": "Form",
+      "props": {
+        "layout": "vertical"
+      },
+      "children": [
+        "node-32",
+        "node-33",
+        "node-34",
+        "node-35",
+        "node-36",
+        "node-37"
+      ]
+    },
+    "node-32": {
+      "type": "Input",
+      "props": {
+        "placeholder": "报销单编号（只读，占位展示即可）"
+      },
+      "children": []
+    },
+    "node-33": {
+      "type": "Input",
+      "props": {
+        "placeholder": "申请人"
+      },
+      "children": []
+    },
+    "node-34": {
+      "type": "Input",
+      "props": {
+        "placeholder": "所属部门"
+      },
+      "children": []
+    },
+    "node-35": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差事由"
+      },
+      "children": []
+    },
+    "node-36": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差开始日期"
+      },
+      "children": []
+    },
+    "node-37": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差结束日期"
+      },
+      "children": []
+    },
+    "node-38": {
       "type": "Table",
       "props": {
         "columns": [
           {
-            "title": "名称",
-            "dataIndex": "name"
+            "title": "日期",
+            "dataIndex": "日期"
           },
           {
-            "title": "状态",
-            "dataIndex": "status"
+            "title": "费用类型",
+            "dataIndex": "费用类型"
+          },
+          {
+            "title": "金额",
+            "dataIndex": "金额"
+          },
+          {
+            "title": "说明",
+            "dataIndex": "说明"
           }
-        ]
+        ],
+        "bordered": true
+      },
+      "children": []
+    },
+    "node-39": {
+      "type": "Input",
+      "props": {
+        "placeholder": "模块三：补充说明"
+      },
+      "children": []
+    },
+    "node-40": {
+      "type": "TypographyText",
+      "props": {
+        "text": "待补充内容 1"
+      },
+      "children": []
+    },
+    "node-41": {
+      "type": "TypographyText",
+      "props": {
+        "text": "待补充内容 2"
+      },
+      "children": []
+    },
+    "node-42": {
+      "type": "TypographyText",
+      "props": {
+        "text": "待补充内容 3"
+      },
+      "children": []
+    },
+    "node-43": {
+      "type": "Descriptions",
+      "props": {
+        "columns": 1
+      },
+      "children": []
+    },
+    "node-44": {
+      "type": "Space",
+      "props": {
+        "direction": "horizontal",
+        "gap": 8
+      },
+      "children": [
+        "node-45",
+        "node-46"
+      ]
+    },
+    "node-45": {
+      "type": "Button",
+      "props": {
+        "label": "取消",
+        "variant": "default"
+      },
+      "children": []
+    },
+    "node-46": {
+      "type": "Button",
+      "props": {
+        "label": "提交审批",
+        "variant": "primary"
       },
       "children": []
     }

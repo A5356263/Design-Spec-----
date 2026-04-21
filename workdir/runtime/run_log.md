@@ -85,3 +85,122 @@
 - [2026-04-21T12:32:26.060Z] stage_3_content 已生成 candidate.page.json。
 - [2026-04-21T12:32:26.065Z] stage_3_content 评估通过并已冻结。
 - [2026-04-21T12:32:26.069Z] final.page.json 已汇总完成。
+- [2026-04-21T12:51:44.657Z] 主链路开始执行。
+- [2026-04-21T12:51:44.660Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:51:44.665Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:51:44.668Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:51:44.672Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:51:44.675Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:51:44.679Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:51:44.682Z] final.page.json 已汇总完成。
+- [2026-04-21T12:51:54.297Z] 主链路开始执行。
+- [2026-04-21T12:51:54.301Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.308Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:51:54.311Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.317Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:51:54.320Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.325Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:51:54.328Z] final.page.json 已汇总完成。
+- [2026-04-21T12:51:54.335Z] 主链路开始执行。
+- [2026-04-21T12:51:54.336Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.340Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:51:54.342Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.347Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:51:54.349Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.354Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:51:54.357Z] final.page.json 已汇总完成。
+- [2026-04-21T12:51:54.359Z] ROLLBACK stage_3_content -> stage_2_components，原因：acceptance-test。
+- [2026-04-21T12:51:54.362Z] 主链路开始执行。
+- [2026-04-21T12:51:54.364Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.368Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:51:54.370Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.374Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:51:54.376Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.382Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:51:54.384Z] ROLLBACK_RESOLVED stage_3_content。
+- [2026-04-21T12:51:54.387Z] 主链路开始执行。
+- [2026-04-21T12:51:54.389Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.393Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:51:54.395Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.399Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:51:54.401Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:51:54.405Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:51:54.408Z] final.page.json 已汇总完成。
+- [2026-04-21T13:24:34.268Z] 主链路开始执行。
+- [2026-04-21T13:24:34.275Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:24:34.281Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:24:34.287Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:24:34.290Z] stage_2_components 评估不通过，主链路停止。
+- [2026-04-21T13:24:48.875Z] 主链路开始执行。
+- [2026-04-21T13:24:48.883Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:24:48.890Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:24:48.895Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:24:48.899Z] stage_2_components 评估不通过，主链路停止。
+- [2026-04-21T13:25:36.637Z] 主链路开始执行。
+- [2026-04-21T13:25:36.643Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.650Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:25:36.656Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.661Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:25:36.674Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.678Z] stage_3_content 评估不通过，主链路停止。
+- [2026-04-21T13:25:36.686Z] 主链路开始执行。
+- [2026-04-21T13:25:36.689Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.696Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:25:36.702Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.708Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:25:36.712Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.715Z] stage_3_content 评估不通过，主链路停止。
+- [2026-04-21T13:25:36.716Z] ROLLBACK stage_3_content -> stage_2_components，原因：acceptance-test。
+- [2026-04-21T13:25:36.719Z] 主链路开始执行。
+- [2026-04-21T13:25:36.723Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.727Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:25:36.731Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.736Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:25:36.740Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:25:36.743Z] stage_3_content 评估不通过，主链路停止。
+- [2026-04-21T13:26:38.057Z] ROLLBACK_RESOLVED stage_3_content。
+- [2026-04-21T13:26:57.161Z] 主链路开始执行。
+- [2026-04-21T13:26:57.167Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.174Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:26:57.181Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.187Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:26:57.192Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.196Z] stage_3_content 评估不通过，主链路停止。
+- [2026-04-21T13:26:57.204Z] 主链路开始执行。
+- [2026-04-21T13:26:57.207Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.213Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:26:57.217Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.222Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:26:57.226Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.229Z] stage_3_content 评估不通过，主链路停止。
+- [2026-04-21T13:26:57.230Z] ROLLBACK stage_3_content -> stage_2_components，原因：acceptance-test。
+- [2026-04-21T13:26:57.233Z] ROLLBACK_RESOLVED stage_3_content。
+- [2026-04-21T13:26:57.237Z] 主链路开始执行。
+- [2026-04-21T13:26:57.240Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.245Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:26:57.249Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.253Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:26:57.258Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.264Z] stage_3_content 评估不通过，主链路停止。
+- [2026-04-21T13:26:57.267Z] 主链路开始执行。
+- [2026-04-21T13:26:57.270Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.275Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:26:57.280Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.285Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:26:57.291Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.295Z] stage_3_content 评估不通过，主链路停止。
+- [2026-04-21T13:26:57.299Z] 主链路开始执行。
+- [2026-04-21T13:26:57.303Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.308Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:26:57.313Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.318Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:26:57.323Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.328Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T13:26:57.331Z] final.page.json 已汇总完成。
+- [2026-04-21T13:26:57.336Z] 主链路开始执行。
+- [2026-04-21T13:26:57.339Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.343Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T13:26:57.347Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.352Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T13:26:57.357Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T13:26:57.360Z] stage_3_content 评估不通过，主链路停止。
