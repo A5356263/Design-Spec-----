@@ -6,7 +6,8 @@
 
 ## 主链路职责
 
-- 读取运行时状态并确定当前阶段
+- 先读取 `workdir/current_run.json` 并定位当前 run
+- 读取当前 run 的运行时状态并确定当前阶段
 - 检查当前阶段 `candidate.page.json` 是否存在
 - 检查当前阶段 `evaluation.md` 是否存在
 - 检查上一阶段 `approved.page.json` 是否满足硬卡口
@@ -31,3 +32,4 @@
 - 缺少上一阶段通过稿
 - 存在未解决的回退记录
 - 当前阶段硬门卡不通过
+- `current_run.json` 缺失或非法

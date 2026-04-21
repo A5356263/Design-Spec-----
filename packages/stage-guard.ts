@@ -1,5 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
+import { getStageDir, resolveCurrentRun } from "./run-context";
 import { StageName, STAGE_DIR } from "./schema";
 
 function normalize(input: string): string {
@@ -18,9 +19,10 @@ export async function writeStageFile(
   targetFile: string,
   content: string
 ): Promise<void> {
-  const stageDir = path.join(projectRoot, STAGE_DIR[stageName]);
+  const currentRun = await resolveCurrentRun(projectRoot);
+  const stageDir = getStageDir(currentRun.workspaceDir, stageName);
   if (!isInDir(targetFile, stageDir)) {
-    throw new Error(`硬卡口失败：阶段 ${stageName} 只能写入 ${STAGE_DIR[stageName]} 目录。`);
+    throw new Error(`硬卡口失败：阶段 ${stageName} 只能写入当前 run 的 ${STAGE_DIR[stageName]} 目录。`);
   }
   await writeFile(targetFile, content, "utf8");
 }

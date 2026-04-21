@@ -12,38 +12,46 @@
 ## 固定阅读顺序
 
 1. `AGENT_ENTRY.md`
-2. `RESOURCE_MANIFEST.md`
-3. `AGENT_STAGE_TASK_TEMPLATE.md`
-4. `input/design_spec.md`
-5. `input/constraints.md`
-6. `input/references.md`
-7. `FLAT_JSON_PROTOCOL.md`
-8. `config/ANT_LITE_CATALOG.json`
-9. `specs/01_mainline_contract.md`
-10. `specs/02_stage_contract.md`
-11. `specs/03_snapshot_contract.md`
+2. `workdir/current_run.json`
+3. `RESOURCE_MANIFEST.md`
+4. `AGENT_STAGE_TASK_TEMPLATE.md`
+5. `input/design_spec.md`
+6. `input/constraints.md`
+7. `input/references.md`
+8. `FLAT_JSON_PROTOCOL.md`
+9. `config/ANT_LITE_CATALOG.json`
+10. `specs/01_mainline_contract.md`
+11. `specs/02_stage_contract.md`
+12. `specs/03_snapshot_contract.md`
+
+## 当前轮定位
+
+- 必须先读取 `workdir/current_run.json`
+- 所有当前任务产物只能写入 `workdir/runs/<run_id>/workspace/...`
+- 不得写入通用 `workdir/workspace/...`
+- 不得改写旧轮目录
 
 ## 主链路执行方式
 
 ### 阶段一
 
 1. Code Agent 读取真源文档
-2. Code Agent 生成 `workdir/workspace/stage_1_skeleton/candidate.page.json`
-3. Code Agent 生成 `workdir/workspace/stage_1_skeleton/evaluation.md`
+2. Code Agent 生成 `workdir/runs/<run_id>/workspace/stage_1_skeleton/candidate.page.json`
+3. Code Agent 生成 `workdir/runs/<run_id>/workspace/stage_1_skeleton/evaluation.md`
 4. 项目执行硬门卡与冻结流程
 
 ### 阶段二
 
 1. Code Agent 读取 `stage_1_skeleton/approved.page.json` 与真源文档
-2. Code Agent 生成 `workdir/workspace/stage_2_components/candidate.page.json`
-3. Code Agent 生成 `workdir/workspace/stage_2_components/evaluation.md`
+2. Code Agent 生成 `workdir/runs/<run_id>/workspace/stage_2_components/candidate.page.json`
+3. Code Agent 生成 `workdir/runs/<run_id>/workspace/stage_2_components/evaluation.md`
 4. 项目执行硬门卡与冻结流程
 
 ### 阶段三
 
 1. Code Agent 读取 `stage_2_components/approved.page.json` 与真源文档
-2. Code Agent 生成 `workdir/workspace/stage_3_content/candidate.page.json`
-3. Code Agent 生成 `workdir/workspace/stage_3_content/evaluation.md`
+2. Code Agent 生成 `workdir/runs/<run_id>/workspace/stage_3_content/candidate.page.json`
+3. Code Agent 生成 `workdir/runs/<run_id>/workspace/stage_3_content/evaluation.md`
 4. 项目执行硬门卡与冻结流程
 
 ### 最终

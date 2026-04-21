@@ -25,9 +25,9 @@ export const MAINLINE_ORDER: StageName[] = [
 ];
 
 export const STAGE_DIR: Record<StageName, string> = {
-  stage_1_skeleton: "workdir/workspace/stage_1_skeleton",
-  stage_2_components: "workdir/workspace/stage_2_components",
-  stage_3_content: "workdir/workspace/stage_3_content"
+  stage_1_skeleton: "stage_1_skeleton",
+  stage_2_components: "stage_2_components",
+  stage_3_content: "stage_3_content"
 };
 
 export const TYPE_RULES: Record<string, { stage: CatalogStage[]; props: string[] }> = {

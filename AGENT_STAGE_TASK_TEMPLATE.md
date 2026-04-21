@@ -2,6 +2,7 @@
 
 ## 阶段输入
 
+- 当前 `run_id`
 - 当前阶段目录
 - 真源文档
 - 上一阶段 `approved.page.json`（如适用）
@@ -10,6 +11,12 @@
 
 - `candidate.page.json`
 - `evaluation.md`
+
+## 当前轮要求
+
+- 先读取 `workdir/current_run.json`
+- 只写入 `workdir/runs/<run_id>/workspace/...`
+- 不要写入旧轮目录
 
 ## 阶段禁止事项
 

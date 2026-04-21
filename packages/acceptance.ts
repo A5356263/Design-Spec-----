@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import { readFile, unlink, writeFile } from "node:fs/promises";
+import { access, readFile, rm, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { evaluateCandidateFile } from "./evaluate";
-import { runMainline, stageFiles } from "./mainline";
+import { runMainline } from "./mainline";
 import { requestRollback, resolveRollback } from "./rollback";
+import { createNewRun, getCurrentRunFile, getStageFiles, readCurrentRun, resolveCurrentRun } from "./run-context";
 import { writeStageFile } from "./stage-guard";
 
 function projectRoot(): string {
@@ -11,7 +12,8 @@ function projectRoot(): string {
 }
 
 async function testStageWriteGuard(root: string): Promise<void> {
-  const invalidTarget = path.join(root, "workdir/runtime/illegal-write.txt");
+  const currentRun = await resolveCurrentRun(root);
+  const invalidTarget = path.join(currentRun.runtimeDir, "illegal-write.txt");
   await assert.rejects(
     () => writeStageFile(root, "stage_1_skeleton", invalidTarget, "x\n"),
     /硬卡口失败/
@@ -20,9 +22,9 @@ async function testStageWriteGuard(root: string): Promise<void> {
 
 async function testCatalogDynamicLoad(root: string): Promise<void> {
   await runMainline(root);
+  const currentRun = await resolveCurrentRun(root);
   const catalogPath = path.join(root, "config/ANT_LITE_CATALOG.json");
-  const stageDir = path.join(root, "workdir/workspace/stage_2_components");
-  const candidatePath = path.join(stageDir, "candidate.page.json");
+  const candidatePath = getStageFiles(currentRun, "stage_2_components").candidate;
 
   const oldCatalogRaw = await readFile(catalogPath, "utf8");
   const catalog = JSON.parse(oldCatalogRaw.replace(/^\uFEFF/, ""));
@@ -70,8 +72,9 @@ async function testRollbackGate(root: string): Promise<void> {
 }
 
 async function testMainlineRequiresExternalCandidate(root: string): Promise<void> {
-  const stage1 = stageFiles(root, "stage_1_skeleton");
-  const statePath = path.join(root, "workdir/runtime/state.json");
+  const currentRun = await resolveCurrentRun(root);
+  const stage1 = getStageFiles(currentRun, "stage_1_skeleton");
+  const statePath = currentRun.statePath;
   const originalCandidate = await readFile(stage1.candidate, "utf8");
   const originalState = await readFile(statePath, "utf8");
   try {
@@ -91,8 +94,9 @@ async function testMainlineRequiresExternalCandidate(root: string): Promise<void
 }
 
 async function testMainlineRequiresExternalEvaluation(root: string): Promise<void> {
-  const stage1 = stageFiles(root, "stage_1_skeleton");
-  const statePath = path.join(root, "workdir/runtime/state.json");
+  const currentRun = await resolveCurrentRun(root);
+  const stage1 = getStageFiles(currentRun, "stage_1_skeleton");
+  const statePath = currentRun.statePath;
   const originalEvaluation = await readFile(stage1.evaluation, "utf8");
   const originalState = await readFile(statePath, "utf8");
   try {
@@ -112,8 +116,9 @@ async function testMainlineRequiresExternalEvaluation(root: string): Promise<voi
 }
 
 async function testAgentEvaluationControlsAdvance(root: string): Promise<void> {
-  const stage1 = stageFiles(root, "stage_1_skeleton");
-  const statePath = path.join(root, "workdir/runtime/state.json");
+  const currentRun = await resolveCurrentRun(root);
+  const stage1 = getStageFiles(currentRun, "stage_1_skeleton");
+  const statePath = currentRun.statePath;
   const originalEvaluation = await readFile(stage1.evaluation, "utf8");
   const originalState = await readFile(statePath, "utf8");
   try {
@@ -142,8 +147,36 @@ async function testAgentEvaluationControlsAdvance(root: string): Promise<void> {
   }
 }
 
+async function testCreateNewRunIsolation(root: string): Promise<void> {
+  const original = await readCurrentRun(root);
+  const originalRunId = original.run_id;
+  const originalContext = await resolveCurrentRun(root);
+  const originalFinal = path.join(originalContext.finalDir, "final.page.json");
+  await access(originalFinal);
+
+  const newRunId = `run_acceptance_${Date.now()}`;
+  const newRun = await createNewRun(root, newRunId);
+
+  try {
+    const current = await readCurrentRun(root);
+    assert.equal(current.run_id, newRunId, "新建 run 后 current_run.json 应切换到新 run");
+
+    const state = JSON.parse((await readFile(newRun.statePath, "utf8")).replace(/^\uFEFF/, ""));
+    assert.equal(state.current_stage, "stage_1_skeleton", "新 run 应从阶段一开始");
+
+    const stage1Meta = JSON.parse((await readFile(getStageFiles(newRun, "stage_1_skeleton").meta, "utf8")).replace(/^\uFEFF/, ""));
+    assert.equal(stage1Meta.status, "pending", "新 run 的阶段元数据应初始化为 pending");
+
+    await access(originalFinal);
+  } finally {
+    await writeFile(getCurrentRunFile(root), `${JSON.stringify({ run_id: originalRunId }, null, 2)}\n`, "utf8");
+    await rm(newRun.runRoot, { recursive: true, force: true });
+  }
+}
+
 async function main(): Promise<void> {
   const root = projectRoot();
+  await testCreateNewRunIsolation(root);
   await testStageWriteGuard(root);
   await testRequiredDocsExist(root);
   await testCatalogDynamicLoad(root);

@@ -3,22 +3,27 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateCandidateFile } from "./evaluate";
 import { freezeStage } from "./freeze";
+import { getStageFiles, resolveCurrentRun, RunContext, RuntimeState } from "./run-context";
 import { hasUnresolvedRollback } from "./rollback";
-import { PageSchema, StageName, STAGE_DIR } from "./schema";
+import { PageSchema, StageName } from "./schema";
 
-type RuntimeState = {
-  current_stage: StageName | "completed";
-  last_passed_stage: StageName | null;
-  can_advance: boolean;
-};
+export function stageFiles(projectRoot: string, runId: string, stageName: StageName): Record<string, string> {
+  return getStageFiles(resolveCurrentRunSync(projectRoot, runId), stageName);
+}
 
-export function stageFiles(projectRoot: string, stageName: StageName): Record<string, string> {
-  const base = path.join(projectRoot, STAGE_DIR[stageName]);
+function resolveCurrentRunSync(projectRoot: string, runId: string): RunContext {
+  const runRoot = path.join(projectRoot, "workdir/runs", runId);
+  const runtimeDir = path.join(runRoot, "runtime");
+  const workspaceDir = path.join(runRoot, "workspace");
   return {
-    base,
-    candidate: path.join(base, "candidate.page.json"),
-    approved: path.join(base, "approved.page.json"),
-    evaluation: path.join(base, "evaluation.md")
+    runId,
+    runRoot,
+    runtimeDir,
+    workspaceDir,
+    snapshotsDir: path.join(runtimeDir, "snapshots"),
+    statePath: path.join(runtimeDir, "state.json"),
+    runLogPath: path.join(runtimeDir, "run_log.md"),
+    finalDir: path.join(workspaceDir, "final")
   };
 }
 
@@ -41,18 +46,19 @@ async function writeJson(filePath: string, data: unknown): Promise<void> {
 }
 
 async function readRuntimeState(projectRoot: string): Promise<RuntimeState> {
-  return readJson<RuntimeState>(path.join(projectRoot, "workdir/runtime/state.json"));
+  const currentRun = await resolveCurrentRun(projectRoot);
+  return readJson<RuntimeState>(currentRun.statePath);
 }
 
-async function assertHardGate(projectRoot: string, stageName: StageName): Promise<void> {
+async function assertHardGate(projectRoot: string, currentRun: RunContext, stageName: StageName): Promise<void> {
   if (stageName === "stage_2_components") {
-    const prevApproved = stageFiles(projectRoot, "stage_1_skeleton").approved;
+    const prevApproved = getStageFiles(currentRun, "stage_1_skeleton").approved;
     if (!(await exists(prevApproved))) {
       throw new Error("硬卡口失败：阶段二启动前缺少 stage_1_skeleton/approved.page.json。");
     }
   }
   if (stageName === "stage_3_content") {
-    const prevApproved = stageFiles(projectRoot, "stage_2_components").approved;
+    const prevApproved = getStageFiles(currentRun, "stage_2_components").approved;
     if (!(await exists(prevApproved))) {
       throw new Error("硬卡口失败：阶段三启动前缺少 stage_2_components/approved.page.json。");
     }
@@ -60,22 +66,21 @@ async function assertHardGate(projectRoot: string, stageName: StageName): Promis
 }
 
 async function appendRunLog(projectRoot: string, message: string): Promise<void> {
-  const runLogPath = path.join(projectRoot, "workdir/runtime/run_log.md");
-  const oldLog = await readFile(runLogPath, "utf8");
+  const currentRun = await resolveCurrentRun(projectRoot);
+  const oldLog = await readFile(currentRun.runLogPath, "utf8");
   const now = new Date().toISOString();
-  await writeFile(runLogPath, `${oldLog.trimEnd()}\n- [${now}] ${message}\n`, "utf8");
+  await writeFile(currentRun.runLogPath, `${oldLog.trimEnd()}\n- [${now}] ${message}\n`, "utf8");
 }
 
-async function waitForAgentArtifacts(projectRoot: string, stageName: StageName): Promise<boolean> {
-  const files = stageFiles(projectRoot, stageName);
+async function waitForAgentArtifacts(currentRun: RunContext, stageName: StageName): Promise<boolean> {
+  const files = getStageFiles(currentRun, stageName);
   const hasCandidate = await exists(files.candidate);
   const hasEvaluation = await exists(files.evaluation);
   if (!hasCandidate || !hasEvaluation) {
-    const missing = [
-      !hasCandidate ? "candidate.page.json" : "",
-      !hasEvaluation ? "evaluation.md" : ""
-    ].filter(Boolean).join(" 和 ");
-    await appendRunLog(projectRoot, `${stageName} 等待 Code Agent 产物：${missing}。`);
+    const missing = [!hasCandidate ? "candidate.page.json" : "", !hasEvaluation ? "evaluation.md" : ""].filter(Boolean).join(" 和 ");
+    const oldLog = await readFile(currentRun.runLogPath, "utf8");
+    const now = new Date().toISOString();
+    await writeFile(currentRun.runLogPath, `${oldLog.trimEnd()}\n- [${now}] ${stageName} 等待 Code Agent 产物：${missing}。\n`, "utf8");
     return false;
   }
   return true;
@@ -111,8 +116,8 @@ async function collectInputSnapshots(projectRoot: string): Promise<Record<string
   return snapshots;
 }
 
-async function finalize(projectRoot: string): Promise<void> {
-  const stage3 = stageFiles(projectRoot, "stage_3_content");
+async function finalize(projectRoot: string, currentRun: RunContext): Promise<void> {
+  const stage3 = getStageFiles(currentRun, "stage_3_content");
   if (!(await exists(stage3.approved))) {
     throw new Error("无法生成 final：缺少 stage_3_content/approved.page.json。");
   }
@@ -120,14 +125,14 @@ async function finalize(projectRoot: string): Promise<void> {
     throw new Error("无法生成 final：存在未解决的回退记录。");
   }
   const finalPage = await readJson<PageSchema>(stage3.approved);
-  await writeJson(path.join(projectRoot, "workdir/workspace/final/final.page.json"), finalPage);
+  await writeJson(path.join(currentRun.finalDir, "final.page.json"), finalPage);
   const summary = [
     "# Final Summary",
     "",
     "- 主链路执行完成：阶段一、阶段二、阶段三全部通过并冻结。",
-    "- 最终产物来源：workdir/workspace/stage_3_content/approved.page.json"
+    `- 最终产物来源：workdir/runs/${currentRun.runId}/workspace/stage_3_content/approved.page.json`
   ].join("\n");
-  await writeFile(path.join(projectRoot, "workdir/workspace/final/final-summary.md"), `${summary}\n`, "utf8");
+  await writeFile(path.join(currentRun.finalDir, "final-summary.md"), `${summary}\n`, "utf8");
 }
 
 export async function runMainline(projectRoot = process.cwd()): Promise<void> {
@@ -139,28 +144,29 @@ export async function runMainline(projectRoot = process.cwd()): Promise<void> {
 
   while (true) {
     const state = await readRuntimeState(projectRoot);
+    const currentRun = await resolveCurrentRun(projectRoot);
     if (state.current_stage === "completed") {
-      await finalize(projectRoot);
+      await finalize(projectRoot, currentRun);
       await appendRunLog(projectRoot, "final.page.json 已汇总完成。");
       await verifyInputReadonly(projectRoot, inputSnapshots);
       return;
     }
 
     const stageName = state.current_stage;
-    await assertHardGate(projectRoot, stageName);
-    if (!(await waitForAgentArtifacts(projectRoot, stageName))) {
+    await assertHardGate(projectRoot, currentRun, stageName);
+    if (!(await waitForAgentArtifacts(currentRun, stageName))) {
       await verifyInputReadonly(projectRoot, inputSnapshots);
       return;
     }
-    const files = stageFiles(projectRoot, stageName);
+    const files = getStageFiles(currentRun, stageName);
     await appendRunLog(projectRoot, `${stageName} 检测到 candidate.page.json 与 evaluation.md，开始处理。`);
 
     const previousApproved =
       stageName === "stage_1_skeleton"
         ? undefined
         : stageName === "stage_2_components"
-          ? stageFiles(projectRoot, "stage_1_skeleton").approved
-          : stageFiles(projectRoot, "stage_2_components").approved;
+          ? getStageFiles(currentRun, "stage_1_skeleton").approved
+          : getStageFiles(currentRun, "stage_2_components").approved;
 
     const hardGate = await evaluateCandidateFile(projectRoot, stageName, files.candidate, previousApproved);
     if (!hardGate.passed) {

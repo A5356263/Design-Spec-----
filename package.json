@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "check": "echo ready",
+    "new-run": "tsx packages/new-run.ts",
     "mainline": "tsx packages/mainline.ts",
     "acceptance": "tsx packages/acceptance.ts"
   },
