@@ -1,0 +1,15 @@
+{
+  "name": "doc-gen-eval",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "echo ready"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.1.1",
+    "antd": "^6.3.6",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  }
+}

@@ -1,0 +1,49 @@
+﻿{
+  "root": "demo-root",
+  "elements": {
+    "demo-root": {
+      "type": "Flex",
+      "props": {
+        "direction": "vertical",
+        "gap": 12
+      },
+      "children": [
+        "demo-alert",
+        "demo-table-card"
+      ]
+    },
+    "demo-alert": {
+      "type": "Alert",
+      "props": {
+        "message": "当前数据为示例内容",
+        "description": "用于阶段三内容填充演示",
+        "tone": "info",
+        "showGlyph": true
+      },
+      "children": []
+    },
+    "demo-table-card": {
+      "type": "Card",
+      "props": {
+        "title": "结果列表"
+      },
+      "children": [
+        "demo-table"
+      ]
+    },
+    "demo-table": {
+      "type": "Table",
+      "props": {
+        "columns": [
+          { "title": "名称", "dataIndex": "name" },
+          { "title": "状态", "dataIndex": "status" }
+        ],
+        "rows": [
+          { "name": "样例 A", "status": "正常" },
+          { "name": "样例 B", "status": "待处理" }
+        ]
+      },
+      "children": []
+    }
+  }
+}

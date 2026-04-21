@@ -1,0 +1,61 @@
+﻿{
+  "root": "demo-root",
+  "elements": {
+    "demo-root": {
+      "type": "Flex",
+      "props": {
+        "direction": "vertical",
+        "gap": 12
+      },
+      "children": [
+        "demo-toolbar",
+        "demo-table-card"
+      ]
+    },
+    "demo-toolbar": {
+      "type": "Space",
+      "props": {
+        "direction": "horizontal",
+        "gap": 8
+      },
+      "children": [
+        "demo-search-input",
+        "demo-search-btn"
+      ]
+    },
+    "demo-search-input": {
+      "type": "Input",
+      "props": {
+        "placeholder": "请输入关键词"
+      },
+      "children": []
+    },
+    "demo-search-btn": {
+      "type": "Button",
+      "props": {
+        "label": "查询",
+        "variant": "primary"
+      },
+      "children": []
+    },
+    "demo-table-card": {
+      "type": "Card",
+      "props": {
+        "title": "结果列表"
+      },
+      "children": [
+        "demo-table"
+      ]
+    },
+    "demo-table": {
+      "type": "Table",
+      "props": {
+        "columns": [
+          { "title": "名称", "dataIndex": "name" },
+          { "title": "状态", "dataIndex": "status" }
+        ]
+      },
+      "children": []
+    }
+  }
+}
