@@ -52,3 +52,36 @@
 - [2026-04-21T08:37:57.778Z] stage_3_content 已生成 candidate.page.json。
 - [2026-04-21T08:37:57.783Z] stage_3_content 评估通过并已冻结。
 - [2026-04-21T08:37:57.787Z] final.page.json 已汇总完成。
+- [2026-04-21T12:32:16.467Z] 主链路开始执行。
+- [2026-04-21T12:32:16.472Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:32:16.477Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:32:16.481Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:32:16.486Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:32:16.489Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:32:16.494Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:32:16.500Z] final.page.json 已汇总完成。
+- [2026-04-21T12:32:25.994Z] 主链路开始执行。
+- [2026-04-21T12:32:25.998Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.002Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:32:26.004Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.009Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:32:26.011Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.016Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:32:26.019Z] final.page.json 已汇总完成。
+- [2026-04-21T12:32:26.020Z] ROLLBACK stage_3_content -> stage_2_components，原因：acceptance-test。
+- [2026-04-21T12:32:26.023Z] 主链路开始执行。
+- [2026-04-21T12:32:26.025Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.030Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:32:26.032Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.035Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:32:26.038Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.042Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:32:26.044Z] ROLLBACK_RESOLVED stage_3_content。
+- [2026-04-21T12:32:26.046Z] 主链路开始执行。
+- [2026-04-21T12:32:26.048Z] stage_1_skeleton 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.052Z] stage_1_skeleton 评估通过并已冻结。
+- [2026-04-21T12:32:26.054Z] stage_2_components 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.058Z] stage_2_components 评估通过并已冻结。
+- [2026-04-21T12:32:26.060Z] stage_3_content 已生成 candidate.page.json。
+- [2026-04-21T12:32:26.065Z] stage_3_content 评估通过并已冻结。
+- [2026-04-21T12:32:26.069Z] final.page.json 已汇总完成。

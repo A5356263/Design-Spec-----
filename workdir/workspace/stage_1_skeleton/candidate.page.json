@@ -15,7 +15,7 @@
     "demo-header": {
       "type": "Card",
       "props": {
-        "title": "页面目标：提供一个文档生成与评估的演示页"
+        "title": "页面标题：差旅报销申请"
       },
       "children": [
         "demo-title"
