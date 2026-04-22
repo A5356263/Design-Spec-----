@@ -1,0 +1,236 @@
+{
+  "root": "page_root",
+  "elements": {
+    "page_root": {
+      "type": "Flex",
+      "props": {
+        "direction": "vertical",
+        "gap": 24,
+        "width": "100%"
+      },
+      "children": ["top_section", "main_section", "bottom_section"]
+    },
+    "top_section": {
+      "type": "Card",
+      "props": {
+        "title": "顶部标题与操作区",
+        "padding": 24,
+        "gap": 16,
+        "width": "100%"
+      },
+      "children": ["top_layout"]
+    },
+    "top_layout": {
+      "type": "Flex",
+      "props": {
+        "justify": "space-between",
+        "align": "center",
+        "gap": 16,
+        "width": "100%"
+      },
+      "children": ["top_title_group", "top_action_group"]
+    },
+    "top_title_group": {
+      "type": "Space",
+      "props": {
+        "direction": "vertical",
+        "gap": 8,
+        "align": "start"
+      },
+      "children": ["page_title", "page_desc"]
+    },
+    "page_title": {
+      "type": "TypographyText",
+      "props": {
+        "text": "差旅报销申请",
+        "level": 2,
+        "emphasis": "strong"
+      },
+      "children": []
+    },
+    "page_desc": {
+      "type": "TypographyText",
+      "props": {
+        "text": "用于创建并提交本次差旅报销",
+        "level": 4
+      },
+      "children": []
+    },
+    "top_action_group": {
+      "type": "Space",
+      "props": {
+        "direction": "horizontal",
+        "gap": 12,
+        "align": "center"
+      },
+      "children": ["status_placeholder", "action_placeholder_1", "action_placeholder_2"]
+    },
+    "status_placeholder": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "action_placeholder_1": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "action_placeholder_2": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "main_section": {
+      "type": "Flex",
+      "props": {
+        "direction": "horizontal",
+        "gap": 24,
+        "align": "start",
+        "width": "100%"
+      },
+      "children": ["left_primary_area", "right_assist_area"]
+    },
+    "left_primary_area": {
+      "type": "Flex",
+      "props": {
+        "direction": "vertical",
+        "gap": 16,
+        "width": "70%"
+      },
+      "children": ["basic_info_module", "expense_detail_module", "extra_note_module"]
+    },
+    "basic_info_module": {
+      "type": "Card",
+      "props": {
+        "title": "基础信息",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": ["basic_info_skeleton"]
+    },
+    "basic_info_skeleton": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "expense_detail_module": {
+      "type": "Card",
+      "props": {
+        "title": "费用明细",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": ["expense_detail_skeleton"]
+    },
+    "expense_detail_skeleton": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "extra_note_module": {
+      "type": "Card",
+      "props": {
+        "title": "补充说明",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": ["extra_note_skeleton"]
+    },
+    "extra_note_skeleton": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "right_assist_area": {
+      "type": "Flex",
+      "props": {
+        "direction": "vertical",
+        "gap": 16,
+        "width": "30%"
+      },
+      "children": ["rule_hint_module", "summary_info_module"]
+    },
+    "rule_hint_module": {
+      "type": "Card",
+      "props": {
+        "title": "报销规则提示",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": ["rule_hint_skeleton"]
+    },
+    "rule_hint_skeleton": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "summary_info_module": {
+      "type": "Card",
+      "props": {
+        "title": "汇总信息",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": ["summary_info_skeleton"]
+    },
+    "summary_info_skeleton": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "bottom_section": {
+      "type": "Card",
+      "props": {
+        "title": "底部提交操作区",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": ["bottom_layout"]
+    },
+    "bottom_layout": {
+      "type": "Flex",
+      "props": {
+        "justify": "flex-end",
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": ["bottom_action_placeholder_1", "bottom_action_placeholder_2"]
+    },
+    "bottom_action_placeholder_1": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    },
+    "bottom_action_placeholder_2": {
+      "type": "Skeleton",
+      "props": {
+        "active": true
+      },
+      "children": []
+    }
+  }
+}

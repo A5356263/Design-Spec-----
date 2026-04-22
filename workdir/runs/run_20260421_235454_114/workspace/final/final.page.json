@@ -1,0 +1,417 @@
+{
+  "root": "page_root",
+  "elements": {
+    "page_root": {
+      "type": "Flex",
+      "props": {
+        "direction": "vertical",
+        "gap": 24,
+        "width": "100%"
+      },
+      "children": [
+        "top_section",
+        "main_section",
+        "bottom_section"
+      ]
+    },
+    "top_section": {
+      "type": "Card",
+      "props": {
+        "title": "顶部标题与操作区",
+        "padding": 24,
+        "gap": 16,
+        "width": "100%"
+      },
+      "children": [
+        "top_layout"
+      ]
+    },
+    "top_layout": {
+      "type": "Flex",
+      "props": {
+        "justify": "space-between",
+        "align": "center",
+        "gap": 16,
+        "width": "100%"
+      },
+      "children": [
+        "top_title_group",
+        "top_action_group"
+      ]
+    },
+    "top_title_group": {
+      "type": "Space",
+      "props": {
+        "direction": "vertical",
+        "gap": 8,
+        "align": "start"
+      },
+      "children": [
+        "page_title",
+        "page_desc"
+      ]
+    },
+    "page_title": {
+      "type": "TypographyText",
+      "props": {
+        "text": "差旅报销申请",
+        "level": 2,
+        "emphasis": "strong"
+      },
+      "children": []
+    },
+    "page_desc": {
+      "type": "TypographyText",
+      "props": {
+        "text": "用于创建并提交本次差旅报销",
+        "level": 4
+      },
+      "children": []
+    },
+    "top_action_group": {
+      "type": "Space",
+      "props": {
+        "direction": "horizontal",
+        "gap": 12,
+        "align": "center"
+      },
+      "children": [
+        "status_tag",
+        "save_draft_button",
+        "submit_button_top"
+      ]
+    },
+    "status_tag": {
+      "type": "Tag",
+      "props": {
+        "label": "草稿",
+        "tone": "info",
+        "size": "middle"
+      },
+      "children": []
+    },
+    "save_draft_button": {
+      "type": "Button",
+      "props": {
+        "label": "保存草稿",
+        "variant": "default",
+        "size": "middle"
+      },
+      "children": []
+    },
+    "submit_button_top": {
+      "type": "Button",
+      "props": {
+        "label": "提交审批",
+        "variant": "primary",
+        "size": "middle"
+      },
+      "children": []
+    },
+    "main_section": {
+      "type": "Flex",
+      "props": {
+        "direction": "horizontal",
+        "gap": 24,
+        "align": "start",
+        "width": "100%"
+      },
+      "children": [
+        "left_primary_area",
+        "right_assist_area"
+      ]
+    },
+    "left_primary_area": {
+      "type": "Flex",
+      "props": {
+        "direction": "vertical",
+        "gap": 16,
+        "width": "70%"
+      },
+      "children": [
+        "basic_info_module",
+        "expense_detail_module",
+        "extra_note_module"
+      ]
+    },
+    "basic_info_module": {
+      "type": "Card",
+      "props": {
+        "title": "基础信息",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": [
+        "basic_info_form"
+      ]
+    },
+    "basic_info_form": {
+      "type": "Form",
+      "props": {
+        "layout": "vertical",
+        "disabled": false
+      },
+      "children": [
+        "field_reimburse_no",
+        "field_applicant",
+        "field_department",
+        "field_trip_reason",
+        "field_start_date",
+        "field_end_date"
+      ]
+    },
+    "field_reimburse_no": {
+      "type": "Input",
+      "props": {
+        "placeholder": "报销单编号",
+        "value": "BX2026030001",
+        "disabled": true
+      },
+      "children": []
+    },
+    "field_applicant": {
+      "type": "Input",
+      "props": {
+        "placeholder": "申请人",
+        "value": "张三"
+      },
+      "children": []
+    },
+    "field_department": {
+      "type": "Select",
+      "props": {
+        "options": [
+          "市场部",
+          "销售部",
+          "财务部"
+        ],
+        "value": "市场部",
+        "placeholder": "所属部门"
+      },
+      "children": []
+    },
+    "field_trip_reason": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差事由",
+        "value": "上海客户拜访与项目沟通"
+      },
+      "children": []
+    },
+    "field_start_date": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差开始日期",
+        "value": "2026-03-01"
+      },
+      "children": []
+    },
+    "field_end_date": {
+      "type": "Input",
+      "props": {
+        "placeholder": "出差结束日期",
+        "value": "2026-03-02"
+      },
+      "children": []
+    },
+    "expense_detail_module": {
+      "type": "Card",
+      "props": {
+        "title": "费用明细",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": [
+        "expense_table"
+      ]
+    },
+    "expense_table": {
+      "type": "Table",
+      "props": {
+        "columns": [
+          {
+            "title": "日期",
+            "dataIndex": "日期"
+          },
+          {
+            "title": "费用类型",
+            "dataIndex": "费用类型"
+          },
+          {
+            "title": "金额",
+            "dataIndex": "金额"
+          },
+          {
+            "title": "说明",
+            "dataIndex": "说明"
+          }
+        ],
+        "rows": [
+          {
+            "日期": "2026-03-01",
+            "费用类型": "酒店",
+            "金额": "¥800",
+            "说明": "上海出差住宿"
+          },
+          {
+            "日期": "2026-03-02",
+            "费用类型": "餐饮",
+            "金额": "¥120",
+            "说明": "客户拜访午餐"
+          }
+        ],
+        "size": "middle",
+        "bordered": true,
+        "width": "100%"
+      },
+      "children": []
+    },
+    "extra_note_module": {
+      "type": "Card",
+      "props": {
+        "title": "补充说明",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": [
+        "extra_note_input"
+      ]
+    },
+    "extra_note_input": {
+      "type": "Input",
+      "props": {
+        "placeholder": "补充说明",
+        "value": "本次报销包含住宿与餐饮费用，提交后进入常规审批流程。"
+      },
+      "children": []
+    },
+    "right_assist_area": {
+      "type": "Flex",
+      "props": {
+        "direction": "vertical",
+        "gap": 16,
+        "width": "30%"
+      },
+      "children": [
+        "rule_hint_module",
+        "summary_info_module"
+      ]
+    },
+    "rule_hint_module": {
+      "type": "Card",
+      "props": {
+        "title": "报销规则提示",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": [
+        "rule_hint_alert"
+      ]
+    },
+    "rule_hint_alert": {
+      "type": "Alert",
+      "props": {
+        "message": "报销规则提示",
+        "description": "酒店费用需提供发票；餐饮费用单次不可超过规定额度；提交后将进入审批流程。",
+        "tone": "info",
+        "showGlyph": true
+      },
+      "children": []
+    },
+    "summary_info_module": {
+      "type": "Card",
+      "props": {
+        "title": "汇总信息",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": [
+        "summary_info_group"
+      ]
+    },
+    "summary_info_group": {
+      "type": "Space",
+      "props": {
+        "direction": "vertical",
+        "gap": 8,
+        "align": "start"
+      },
+      "children": [
+        "summary_total",
+        "summary_count",
+        "summary_status"
+      ]
+    },
+    "summary_total": {
+      "type": "TypographyText",
+      "props": {
+        "text": "费用合计：¥920",
+        "level": 4
+      },
+      "children": []
+    },
+    "summary_count": {
+      "type": "TypographyText",
+      "props": {
+        "text": "明细条数：2",
+        "level": 4
+      },
+      "children": []
+    },
+    "summary_status": {
+      "type": "TypographyText",
+      "props": {
+        "text": "当前状态：草稿",
+        "level": 4
+      },
+      "children": []
+    },
+    "bottom_section": {
+      "type": "Card",
+      "props": {
+        "title": "底部提交操作区",
+        "padding": 24,
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": [
+        "bottom_layout"
+      ]
+    },
+    "bottom_layout": {
+      "type": "Flex",
+      "props": {
+        "justify": "flex-end",
+        "gap": 12,
+        "width": "100%"
+      },
+      "children": [
+        "cancel_button",
+        "submit_button_bottom"
+      ]
+    },
+    "cancel_button": {
+      "type": "Button",
+      "props": {
+        "label": "取消",
+        "variant": "default",
+        "size": "middle"
+      },
+      "children": []
+    },
+    "submit_button_bottom": {
+      "type": "Button",
+      "props": {
+        "label": "提交审批",
+        "variant": "primary",
+        "size": "middle"
+      },
+      "children": []
+    }
+  }
+}
