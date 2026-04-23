@@ -16,3 +16,24 @@
 - [2026-04-21T16:01:06.480Z] stage_3_content 检测到 candidate.page.json 与 evaluation.md，开始处理。
 - [2026-04-21T16:01:06.488Z] stage_3_content 评估通过并已冻结。
 - [2026-04-21T16:01:06.493Z] final.page.json 已汇总完成。
+- [2026-04-22T03:39:11.180Z] 主链路开始执行。
+- [2026-04-22T03:39:11.187Z] final.page.json 已汇总完成。
+- [2026-04-22T03:39:11.196Z] 主链路开始执行。
+- [2026-04-22T03:39:11.202Z] final.page.json 已汇总完成。
+- [2026-04-22T03:39:11.204Z] ROLLBACK stage_3_content -> stage_2_components，原因：acceptance-test。
+- [2026-04-22T03:39:11.211Z] ROLLBACK_RESOLVED stage_3_content。
+- [2026-04-22T03:39:11.215Z] 主链路开始执行。
+- [2026-04-22T03:39:11.218Z] stage_2_components 检测到 candidate.page.json 与 evaluation.md，开始处理。
+- [2026-04-22T03:39:11.227Z] stage_2_components 评估通过并已冻结。
+- [2026-04-22T03:39:11.230Z] stage_3_content 检测到 candidate.page.json 与 evaluation.md，开始处理。
+- [2026-04-22T03:39:11.236Z] stage_3_content 评估通过并已冻结。
+- [2026-04-22T03:39:11.243Z] final.page.json 已汇总完成。
+- [2026-04-22T03:39:11.249Z] 主链路开始执行。
+- [2026-04-22T03:39:11.251Z] stage_1_skeleton 等待 Code Agent 产物：candidate.page.json。
+- [2026-04-22T03:39:11.263Z] 主链路开始执行。
+- [2026-04-22T03:39:11.265Z] stage_1_skeleton 等待 Code Agent 产物：evaluation.md。
+- [2026-04-22T03:39:11.273Z] 主链路开始执行。
+- [2026-04-22T03:39:11.275Z] stage_1_skeleton 检测到 candidate.page.json 与 evaluation.md，开始处理。
+- [2026-04-22T03:39:11.277Z] stage_1_skeleton Agent 评估为不通过，停留当前阶段。
+- [2026-04-22T06:25:02.551Z] 主链路开始执行。
+- [2026-04-22T06:25:02.567Z] final.page.json 已汇总完成。

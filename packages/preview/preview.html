@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>阶段 JSON 预览</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1>JSON 预览</h1>
+        <p class="sidebar-desc">只读查看当前轮各阶段页面 JSON 的真实结构与效果。</p>
+
+        <div class="control-group">
+          <label for="run-id-input">Run ID</label>
+          <input id="run-id-input" type="text" placeholder="自动读取 current_run.json" />
+        </div>
+
+        <div class="control-group">
+          <label for="stage-select">阶段</label>
+          <select id="stage-select">
+            <option value="stage_1_skeleton">stage_1_skeleton</option>
+            <option value="stage_2_components">stage_2_components</option>
+            <option value="stage_3_content">stage_3_content</option>
+            <option value="final">final</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="version-select">版本</label>
+          <select id="version-select">
+            <option value="candidate">candidate</option>
+            <option value="approved">approved</option>
+            <option value="final">final</option>
+          </select>
+        </div>
+
+        <div class="button-row">
+          <button id="reload-button" type="button">重新加载</button>
+          <button id="use-current-run-button" type="button" class="button-secondary">读取当前轮</button>
+        </div>
+
+        <div class="meta-panel">
+          <div class="meta-row">
+            <span class="meta-label">当前来源</span>
+            <code id="source-path">-</code>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">状态</span>
+            <span id="status-text">待加载</span>
+          </div>
+        </div>
+
+        <div id="error-box" class="error-box hidden"></div>
+      </aside>
+
+      <main class="main-content">
+        <header class="preview-header">
+          <div>
+            <h2 id="preview-title">阶段预览</h2>
+            <p id="preview-subtitle" class="preview-subtitle">等待读取 JSON</p>
+          </div>
+        </header>
+
+        <section id="preview-canvas" class="preview-canvas"></section>
+      </main>
+    </div>
+
+    <script type="module" src="./renderer.js"></script>
+  </body>
+</html>

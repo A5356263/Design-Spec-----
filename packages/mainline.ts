@@ -3,9 +3,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateCandidateFile } from "./evaluate";
 import { freezeStage } from "./freeze";
+import { exportPageHtmlFromJson } from "./html-export";
 import { getStageFiles, resolveCurrentRun, RunContext, RuntimeState } from "./run-context";
 import { hasUnresolvedRollback } from "./rollback";
-import { PageSchema, StageName } from "./schema";
+import { MAINLINE_ORDER, PageSchema, StageName } from "./schema";
 
 export function stageFiles(projectRoot: string, runId: string, stageName: StageName): Record<string, string> {
   return getStageFiles(resolveCurrentRunSync(projectRoot, runId), stageName);
@@ -117,6 +118,26 @@ async function collectInputSnapshots(projectRoot: string): Promise<Record<string
 }
 
 async function finalize(projectRoot: string, currentRun: RunContext): Promise<void> {
+  for (const stageName of MAINLINE_ORDER) {
+    const stage = getStageFiles(currentRun, stageName);
+    if (await exists(stage.candidate)) {
+      await exportPageHtmlFromJson(
+        stage.candidate,
+        path.join(stage.base, "candidate.page.html"),
+        `${stageName} candidate`,
+        `workdir/runs/${currentRun.runId}/workspace/${stageName}/candidate.page.json`
+      );
+    }
+    if (await exists(stage.approved)) {
+      await exportPageHtmlFromJson(
+        stage.approved,
+        path.join(stage.base, "approved.page.html"),
+        `${stageName} approved`,
+        `workdir/runs/${currentRun.runId}/workspace/${stageName}/approved.page.json`
+      );
+    }
+  }
+
   const stage3 = getStageFiles(currentRun, "stage_3_content");
   if (!(await exists(stage3.approved))) {
     throw new Error("无法生成 final：缺少 stage_3_content/approved.page.json。");
@@ -125,7 +146,14 @@ async function finalize(projectRoot: string, currentRun: RunContext): Promise<vo
     throw new Error("无法生成 final：存在未解决的回退记录。");
   }
   const finalPage = await readJson<PageSchema>(stage3.approved);
-  await writeJson(path.join(currentRun.finalDir, "final.page.json"), finalPage);
+  const finalJsonPath = path.join(currentRun.finalDir, "final.page.json");
+  await writeJson(finalJsonPath, finalPage);
+  await exportPageHtmlFromJson(
+    finalJsonPath,
+    path.join(currentRun.finalDir, "final.page.html"),
+    "final",
+    `workdir/runs/${currentRun.runId}/workspace/final/final.page.json`
+  );
   const summary = [
     "# Final Summary",
     "",
@@ -160,6 +188,12 @@ export async function runMainline(projectRoot = process.cwd()): Promise<void> {
     }
     const files = getStageFiles(currentRun, stageName);
     await appendRunLog(projectRoot, `${stageName} 检测到 candidate.page.json 与 evaluation.md，开始处理。`);
+    await exportPageHtmlFromJson(
+      files.candidate,
+      path.join(files.base, "candidate.page.html"),
+      `${stageName} candidate`,
+      `workdir/runs/${currentRun.runId}/workspace/${stageName}/candidate.page.json`
+    );
 
     const previousApproved =
       stageName === "stage_1_skeleton"

@@ -1,4 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { exportPageHtmlFromJson } from "./html-export";
 import { getCurrentRunFile, getStageFiles, resolveCurrentRun, RuntimeState } from "./run-context";
 import { getNextStage, StageName } from "./schema";
 import { writeStageFile } from "./stage-guard";
@@ -32,6 +34,12 @@ export async function freezeStage(projectRoot: string, stageName: StageName): Pr
 
   const candidateRaw = await readFile(stage.candidate, "utf8");
   await writeStageFile(projectRoot, stageName, stage.approved, candidateRaw.endsWith("\n") ? candidateRaw : `${candidateRaw}\n`);
+  await exportPageHtmlFromJson(
+    stage.approved,
+    path.join(stage.base, "approved.page.html"),
+    `${stageName} approved`,
+    `workdir/runs/${currentRun.runId}/workspace/${stageName}/approved.page.json`
+  );
   await updateMeta(projectRoot, stage.meta, stageName);
 
   const latestRunRaw = await readFile(currentRunFile, "utf8");
